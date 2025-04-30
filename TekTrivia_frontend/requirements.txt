@@ -1,0 +1,5 @@
+npm create vite@latest . -- --template react
+
+npm install #To install the requirements (dependencies)
+
+npm run dev #To run the app
