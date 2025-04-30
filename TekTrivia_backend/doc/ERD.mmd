@@ -1,0 +1,140 @@
+erDiagram
+    PLAYER ||--|| BASE_USER : inherits from
+    ADMIN ||--|| BASE_USER : inherits from
+    PLAYER }|..|{ RANK : has
+    PLAYER }|--|{ TITLE : has
+    PLAYER }|--|{ BADGES : has
+    PLAYER }o--o{ QUIZ : participates in
+    PLAYER }o--o{ TOURNAMENT : participates in
+    QUIZ |o--o| CATEGORY : has
+    QUIZ }o--|| QUIZ_BODY : has
+    QUIZ_BODY }o--|{ QUESTIONS : contains
+    TOURNAMENT }o--|{ QUIZ : has
+
+    
+
+    BASE_USER {
+        uiid id PK
+        string last_name
+        string first_name
+        string username
+        string email
+        string password
+        string phone
+        string profile_picture
+        bool email_confirmed
+        datetime create_date
+        datetime last_login
+    }
+
+    PLAYER {
+        int level
+        int XP
+        int points
+        string rank
+        string title
+        list badges FK
+        list acquired_res
+        list friends FK
+        list quiz_created FK
+        list participated_in FK
+        int login_streak
+        int login_count
+    }
+
+    ADMIN {
+        bool is_super_admin
+    }
+
+    QUIZ {
+        int id PK
+        enum type
+        string category FK
+        string name
+        int points_awarded
+        bool is_validated
+        list ressources
+        string creator
+    }
+
+    QUIZ_BODY {
+        int id PK
+        int quiz_id FK
+        list questions
+    }
+
+    QUESTIONS {
+        string question
+        list answers
+        list good_answers
+        list images
+        int points
+        enum difficulty
+    }
+
+    CATEGORY {
+        int id PK
+        string name
+        string description
+        enum type
+        string badges FK
+    }
+
+    RANK {
+        int id PK
+        string name
+        int min_xp
+        list badges
+    }
+
+    BADGES {
+        int id PK
+        int req_xp
+        string picture
+        string category
+    }
+
+    TITLE {
+        int id PK
+        string name
+    }
+
+    ARTICLES {
+        int id PK
+        string article
+        string comments
+    }
+
+    RESSOURCES {
+        int id PK
+        string link
+        string category
+    }
+
+    TOURNAMENT {
+        int id PK
+        string tournament_name
+        string description
+        enum tournament_type
+        list category_name FK
+        list quizz FK
+        list winners FK
+        list participants FK
+        datetime start_date
+        datetime end_date
+        int XP_rewarded
+    }
+
+    NOTIFICATION {
+        int id PK
+        string type
+        string title
+        string content
+        string sender
+        string receiver FK
+        enum priority
+        class design
+        bool is_read
+        bool is_deleted
+    }
+
