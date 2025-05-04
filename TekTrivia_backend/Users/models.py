@@ -7,6 +7,12 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+ROLE_CHOICES = [
+    ('player', 'Player'),
+    ('admin', 'Admin'),
+]
+
+
 class TimeStampedModel(models.Model):
      updated_at = models.DateTimeField(auto_now=True)
      created_at = models.DateTimeField(auto_now_add=True)
@@ -23,6 +29,7 @@ class BaseUser(TimeStampedModel):
     phone = models.CharField(max_length=255)
     # profile_picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
     email_confirmed = models.BooleanField(default=False)
+    role = models.CharField(max_length=10)
 
     class Meta:
         abstract = True
@@ -34,21 +41,23 @@ class Player (BaseUser):
     login_streak = models.PositiveIntegerField(default=0)
     login_count = models.PositiveIntegerField(default=0)
     rank = models.ForeignKey(
-        'Rank',
+        'Achievements.Rank',
         on_delete=models.DO_NOTHING
     )
     title = models.ForeignKey(
-        'Title',
+        'Achievements.Title',
         on_delete=models.DO_NOTHING,
-        null=True
+        null=True,
+        blank=True
     )
     # badges = models.ManyToManyField('Badge', on_delete=models.DO_NOTHING, null=True, blank=True)
     # acquired_res
-    friends = models.ForeignKey(
-        'Player',
+    friends = models.ManyToManyField(
+        'self',
         on_delete=models.DO_NOTHING,
-        null=True
+        blank=True
     )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='player')
     # quiz_created
     # participated_in = models.ManyToManyField()
     class Meta:
@@ -59,6 +68,7 @@ class Player (BaseUser):
 
 class Admin (BaseUser):
     is_superadmin = models.BooleanField(default=False)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='admin')
     class Meta:
         # db_tablespace = 'Users'
         db_table = 'admin'
