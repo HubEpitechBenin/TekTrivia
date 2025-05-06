@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import 'boxicons/css/boxicons.min.css';
 import SignInForm from './components/SignInForm'
 import SignUpForm from './components/SignUpForm'
 import ToggleBox from './components/ToggleBox'
@@ -9,7 +8,7 @@ import TogglePanelRight from './components/TogglePanelRight'
 const Login = () => {
   const [isActive, setIsActive] = useState(false);
   return (
-    <div className="flex justify-center items-center min-h-screen bg-pm-blue-600">
+    <div className="flex justify-center items-center min-h-screen bg-pm-blue600">
       <Container isActive={isActive} setIsActive={setIsActive} />
     </div>
   )

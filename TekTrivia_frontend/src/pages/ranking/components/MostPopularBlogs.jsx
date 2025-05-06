@@ -2,7 +2,7 @@ import React from 'react'
 
 const MostPopularBlogs = () => {
   return (
-    <div className="bg-amber-900 h-[50%]">
+    <div className="dark:bg-pm-rBlack h-[50%]">
         MostPopularBlogs
     </div>
   )
