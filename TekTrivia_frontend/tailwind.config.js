@@ -9,17 +9,14 @@ export default {
         },
         colors: {
           pm: {
-            blue: '#093F68',
-            blue300: '#4D83AC',
-            blue600: '#11324A',
-            r10: '#1A1F26',
-            r12: '#0D1117',
-            rBorder: '#3D444D',
-            rBlack: '#010409',
-
-            rank: '#0D1117',
-            rightSidebar: '#010409',
-            border: '#3D444D',
+            blue:           '#093F68',
+            blue300:        '#4D83AC',
+            blue600:        '#11324A',
+            blueHover:      '#1d6397',
+            r10:            '#1A1F26',
+            r12:            '#0D1117',
+            rBorder:        '#3D444D',
+            rBlack:         '#010409'
           },
         },
     },

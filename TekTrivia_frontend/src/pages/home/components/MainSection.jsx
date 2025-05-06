@@ -1,9 +1,17 @@
 import React from 'react'
+import Hero from './Hero'
 
 const MainSection = () => {
   return (
-    <div className="bg-pm-blue min-h-[92%] w-full">
-        MainSection
+    <div className="h-[92%] w-full overflow-scroll">
+        <Hero/>
+        <Hero/>
+        <Hero/>
+        <Hero/>
+        <Hero/>
+        <Hero/>
+        <Hero/>
+        <Hero/>
     </div>
   )
 }
