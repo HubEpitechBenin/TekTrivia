@@ -32,8 +32,8 @@ const MostAttemptQuiz = () => {
         },
     ];
     return (
-        <div className="p-6 h-[50%]">
-            <h3 className="text-pm-blue font-semibold text-[19px]">Most attempt Quiz</h3>
+        <div className="dark:bg-pm-rBlack p-6 h-[50%]">
+            <h3 className="text-pm-blue dark:text-white font-semibold text-[19px]">Most attempt Quiz</h3>
             <div className="h-full">
                 {mostAttemtQuiz.map((item, index) => (
                     <MostAttemptQuizElement
