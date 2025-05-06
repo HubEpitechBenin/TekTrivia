@@ -12,7 +12,7 @@ const TopPlayers = () => {
     ];
     
     return (
-      <div className="w-full flex justify-center items-end bg-pm-blue py-4 rounded-t-2xl min-h-[35%] box-border">
+      <div className="w-full flex justify-center items-end bg-pm-blue dark:bg-pm-r10 dark:border dark:border-pm-rBorder py-4 rounded-t-2xl min-h-[35%] box-border">
         {top3.map((player) => (
           <TopPlayerCard
             key={player.rank}

@@ -3,7 +3,7 @@ import Navbar from './Navbar'
 
 const Header = () => {
   return (
-    <div className="bg-amber-700 flex min-h-[8%] w-full">
+    <div className="bg-pm-blue rounded-sm flex items-center min-h-[8%] w-full fixed">
       <Navbar/>
     </div>
   )
