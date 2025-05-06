@@ -5,21 +5,20 @@
   --font-body: Inter, sans-serif;
 
   --color-pm-blue: #093F68;
+  --color-pm-blue-300: #4D83AC;
   --color-pm-blue-600: #11324A;
+  --color-pm-black: #000000;
+  --color-pm-rank: #0D1117;
+  --color-pm-rank-border: #3D444D;
+  --color-pm-right-sidebar: #010409;
+
+  --color-pm-card: #1A1F26;
+  --color-pm-border: #3D444D; 
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: white;
+  color: black;
 }
+
 

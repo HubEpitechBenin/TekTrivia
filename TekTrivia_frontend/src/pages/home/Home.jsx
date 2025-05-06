@@ -4,7 +4,7 @@ import MainSection from './components/MainSection'
 
 const Home = () => {
   return (
-    <div className="h-full w-full">
+    <div className="h-screen w-full">
       <Header/>
       <MainSection/>
     </div>
