@@ -14,5 +14,5 @@ Start Date: 24/04/2025
 - Create project-specific package requirements by running `pip freeze > requirements.txt`  
 This is a way to document the packages required for this project.  
 You can then install those on your machine by using `pip install -r requirements.txt`
-- Add djongo to the project
+- Add django to the project
 
