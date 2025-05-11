@@ -16,7 +16,11 @@ export default {
             r10:            '#1A1F26',
             r12:            '#0D1117',
             rBorder:        '#3D444D',
-            rBlack:         '#010409'
+            rBlack:         '#010409',
+
+            // light:          '#EFF5FF'
+            light:          '#e0e5ec'
+
           },
         },
     },

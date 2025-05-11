@@ -22,7 +22,7 @@ const SignUpForm = ({isActive}) => {
             <div className="relative w-full my-2 flex flex-col justify-center items-center">
                 <input
                     type="text"
-                    placeholder="Email"
+                    placeholder="tektrivia@epitech.eu"
                     className="w-full px-4 py-2 mb-3 border rounded-2xl placeholder-gray-500 bg-gray-200 focus:outline-none"
                     required
                 />

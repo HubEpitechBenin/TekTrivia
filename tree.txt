@@ -1,0 +1,152 @@
+.
+├── LICENSE
+├── README.md
+├── TekTrivia_backend
+│   ├── Achievements
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   ├── Blog
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   ├── doc
+│   │   ├── ERD.mmd
+│   │   └── progress_hakai.md
+│   ├── Leaderboards
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   ├── manage.py
+│   ├── Notifications
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   ├── Quizzes
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   └── views.py
+│   ├── requirements.txt
+│   ├── TekTrivia
+│   │   ├── asgi.py
+│   │   ├── __init__.py
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── wsgi.py
+│   └── Users
+│       ├── admin.py
+│       ├── apps.py
+│       ├── auth_models.py
+│       ├── auth_services.py
+│       ├── auth_views.py
+│       ├── __init__.py
+│       ├── migrations
+│       │   └── __init__.py
+│       ├── models.py
+│       ├── tests.py
+│       └── views.py
+├── TekTrivia_frontend
+│   ├── eslint.config.js
+│   ├── Images
+│   │   ├── bell.png
+│   │   ├── high-angle-geometrical-forms-with-copy-space (1).jpg
+│   │   ├── home-button.png
+│   │   ├── idea.png
+│   │   ├── layout.png
+│   │   ├── logout.png
+│   │   ├── podium (1).png
+│   │   └── settings.png
+│   ├── index.html
+│   ├── install_tailwindcss.sh
+│   ├── npm-requirements.txt
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── progress_patriko.md
+│   ├── public
+│   │   └── vite.svg
+│   ├── README.md
+│   ├── src
+│   │   ├── App.jsx
+│   │   ├── assets
+│   │   │   ├── avatar1.jpg
+│   │   │   ├── avatar2.jpg
+│   │   │   ├── avatar3.jpg
+│   │   │   ├── kingIcon.png
+│   │   │   └── react.svg
+│   │   ├── components
+│   │   │   ├── context
+│   │   │   │   └── ThemeContext.jsx
+│   │   │   ├── layout
+│   │   │   │   ├── Loader.jsx
+│   │   │   │   ├── PageTransition.jsx
+│   │   │   │   └── ThemeSwitcher.jsx
+│   │   │   ├── LoginButton.jsx
+│   │   │   └── TekTriviaLogo.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   └── pages
+│   │       ├── home
+│   │       │   ├── components
+│   │       │   │   ├── Header.jsx
+│   │       │   │   ├── Hero.jsx
+│   │       │   │   ├── MainSection.jsx
+│   │       │   │   ├── Navbar.jsx
+│   │       │   │   └── Sidebar.jsx
+│   │       │   └── Home.jsx
+│   │       ├── login
+│   │       │   ├── components
+│   │       │   │   ├── SignInForm.jsx
+│   │       │   │   ├── SignUpForm.jsx
+│   │       │   │   ├── ToggleBox.jsx
+│   │       │   │   ├── TogglePanelLeft.jsx
+│   │       │   │   └── TogglePanelRight.jsx
+│   │       │   └── Login.jsx
+│   │       └── ranking
+│   │           ├── components
+│   │           │   ├── Header.jsx
+│   │           │   ├── Learderboard.jsx
+│   │           │   ├── ListPlayersContainer.jsx
+│   │           │   ├── ListPlayersElement.jsx
+│   │           │   ├── MainSection.jsx
+│   │           │   ├── MostAttemptQuizElement.jsx
+│   │           │   ├── MostAttemptQuiz.jsx
+│   │           │   ├── MostPopularBlogsElement.jsx
+│   │           │   ├── MostPopularBlogs.jsx
+│   │           │   ├── RankingSection.jsx
+│   │           │   ├── RightSidebar.jsx
+│   │           │   ├── StatCard.jsx
+│   │           │   ├── Stats.jsx
+│   │           │   ├── TopPlayerCard.jsx
+│   │           │   └── TopPlayers.jsx
+│   │           └── Rank.jsx
+│   ├── tailwind.config.js
+│   └── vite.config.js
+└── tree.txt
+
+31 directories, 119 files
