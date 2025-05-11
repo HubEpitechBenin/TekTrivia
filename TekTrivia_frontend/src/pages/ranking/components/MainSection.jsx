@@ -5,7 +5,7 @@ import RankingSection from './RankingSection'
 
 const MainSection = () => {
   return (
-    <div className="flex justify-between w-full h-[94%] box-border">
+    <div className="flex flex-1 overflow-hidden justify-between w-full h-full box-border">
         <RankingSection/>
         <RightSidebar/>
     </div>
