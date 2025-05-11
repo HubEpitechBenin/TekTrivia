@@ -4,7 +4,7 @@ import MainSection from './components/MainSection'
 
 const Rank = () => {
   return (
-    <div className="bg-white h-screen w-full box-border overflow-hidden">
+    <div className="bg-white flex flex-col h-screen w-full box-border overflow-y-auto no-scrollbar">
         <Header/>
         <MainSection/>
     </div>

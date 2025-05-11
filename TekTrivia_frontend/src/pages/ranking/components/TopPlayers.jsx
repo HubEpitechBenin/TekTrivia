@@ -8,7 +8,7 @@ const TopPlayers = () => {
     const top3 = [
       { rank: 2, name: 'Roy Warren', xp: '220k', country: 'USA', avatar: avatar1 },
       { rank: 1, name: 'Patrice DAGBE', xp: '300k', country: 'Benin', avatar: avatar2 },
-      { rank: 3, name: 'Jean-Baptiste VIOSS', xp: '200k', country: 'Benin', avatar: avatar3 },
+      { rank: 3, name: 'Jean-Baptiste VIOSSI', xp: '200k', country: 'Benin', avatar: avatar3 },
     ];
     
     return (

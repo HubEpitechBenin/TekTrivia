@@ -27,6 +27,3 @@ const Container = ({isActive, setIsActive}) => {
 }
 
 export default Login;
-
-
-// export default Login
