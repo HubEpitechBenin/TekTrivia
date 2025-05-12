@@ -3,7 +3,7 @@ import React from 'react'
 const MostPopularBlogsElement = ({title, image, author, date}) => {
   return (
     <div className="border-b border-pm-blue300 dark:border-pm-rBorder flex gap-2 p-2">
-        <div className="w-[12%] h-[12%] rounded-md overflow-hidden">
+        <div className="w-[13%] h-[12%] rounded-md overflow-hidden">
             <img
                 src={image}
                 alt="blog"
