@@ -35,10 +35,11 @@ class Priority(Enum):
     HIGH = "high"
 
 class Notifications(models.Model):
+    id = models.PositiveIntegerField(primary_key=True)
     type = models.CharField(max_length=64)
     content = JSONField() #liste d'objets JSON contenant des attributs de Text
     title = models.CharField(max_length=64, unique=True)
-    content = models.TextField()
+    #content = models.TextField()
     receiver = models.CharField(max_length=128)
     is_read = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
