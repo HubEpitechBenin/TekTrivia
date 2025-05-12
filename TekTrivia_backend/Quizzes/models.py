@@ -1,5 +1,6 @@
 from django.db import models
-from enum import Enum
+from enum import Enum, unique
+
 
 class QuizType(models.TextChoices):
     QCM = 'QCM', 'Question à choix multiples'
@@ -16,8 +17,9 @@ class Difficulty(Enum):
     MEDIUM = "medium"
     DIFFICULT = "difficult"
 
-class Category(models.TextChoices):
-    id = models.PositiveIntegerField(primary_key=True)
+class Category(models.Model):
+    id = models.AutoField(primary_key=True, unique=True, editable=False)
+    # id = models.PositiveIntegerField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     my_type = models.ForeignKey('Type', on_delete=models.CASCADE)
