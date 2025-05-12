@@ -9,6 +9,7 @@ export default {
         },
         colors: {
           pm: {
+            // blue:           '#059DFF',
             blue:           '#093F68',
             blue300:        '#4D83AC',
             blue600:        '#11324A',
