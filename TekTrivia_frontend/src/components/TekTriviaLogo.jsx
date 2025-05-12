@@ -6,6 +6,11 @@ const TekTriviaLogo = () => {
         <span className="text-2xl font-bold">
             TekTrivia
         </span>
+        {/* <img
+          src="/Tektrivia.png"
+          alt="TekTrivia Logo"
+          className="w-20 h-20"
+        /> */}
     </div>
   )
 }
