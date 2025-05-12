@@ -1,7 +1,9 @@
 import uuid
 
+from django.contrib.auth.hashers import check_password
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.functions import Lower
 
 # Create your models here.
 
@@ -21,7 +23,7 @@ class TimeStampedModel(models.Model):
          ordering = ['-created_at']
 
 class BaseUser(TimeStampedModel):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     last_name = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)
@@ -30,11 +32,31 @@ class BaseUser(TimeStampedModel):
     # profile_picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
     email_confirmed = models.BooleanField(default=False)
     role = models.CharField(max_length=10)
+    is_active = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.email
+
+    def get_full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def check_password(self, raw_password):
+        """
+        Check if raw_password matches the stored password
+        :param raw_password:
+        :return:
+        """
+        return check_password(raw_password, self.password)
+
+    def save(self, *args, **kwargs):
+        self.email = self.email.lower()
+        super().save(*args, **kwargs)
+
 class Player (BaseUser):
+    username = models.CharField(max_length=255, unique=True)
     level = models.PositiveIntegerField(default=0)
     current_xp = models.PositiveIntegerField(default=0)
     current_points = models.PositiveIntegerField(default=0)
@@ -42,7 +64,8 @@ class Player (BaseUser):
     login_count = models.PositiveIntegerField(default=0)
     rank = models.ForeignKey(
         'Achievements.Rank',
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
+        null=True,
     )
     title = models.ForeignKey(
         'Achievements.Title',
@@ -50,11 +73,10 @@ class Player (BaseUser):
         null=True,
         blank=True
     )
-    # badges = models.ManyToManyField('Badge', on_delete=models.DO_NOTHING, null=True, blank=True)
+    # badges = models.ManyToManyField('Badge', null=True, blank=True)
     # acquired_res
     friends = models.ManyToManyField(
         'self',
-        on_delete=models.DO_NOTHING,
         blank=True
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='player')
@@ -65,6 +87,7 @@ class Player (BaseUser):
         verbose_name = 'Player'
         verbose_name_plural = 'Players'
         ordering = ['created_at']
+
 
 class Admin (BaseUser):
     is_superadmin = models.BooleanField(default=False)
