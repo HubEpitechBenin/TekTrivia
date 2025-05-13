@@ -24,10 +24,10 @@ class ImageElement:
 class DesignNotification:
     background_color: str  # ex: "#000000"
     border_radius: int  # en pixels
-    images: Optional[List[ImageElement]] = field(default_factory=list)
-    date_notification: datetime = field(default_factory=datetime.now) #la date actuelle par défaut
     sender: str  # nom ou identifiant
     display_duration: int = 5  # en secondes
+    images: Optional[List[ImageElement]] = field(default_factory=list)
+    date_notification: datetime = field(default_factory=datetime.now) #la date actuelle par défaut
 
 class Priority(Enum):
     LOW = "low"
@@ -35,15 +35,16 @@ class Priority(Enum):
     HIGH = "high"
 
 class Notifications(models.Model):
+    id = models.PositiveIntegerField(primary_key=True)
     type = models.CharField(max_length=64)
     content = JSONField() #liste d'objets JSON contenant des attributs de Text
     title = models.CharField(max_length=64, unique=True)
-    content = models.TextField()
+    #content = models.TextField()
     receiver = models.CharField(max_length=128)
     is_read = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     priority = models.ForeignKey('Priority', on_delete=models.CASCADE)
-    design = models.OneToOneField(DesignNotification, on_delete=models.CASCADE) #Une notification -> design unique, un design -> une notification
+    # design = models.OneToOneField(DesignNotification, on_delete=models.CASCADE) #Une notification -> design unique, un design -> une notification
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
