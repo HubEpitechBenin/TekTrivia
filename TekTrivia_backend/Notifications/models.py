@@ -11,7 +11,7 @@ class Alignement(models.TextChoices):
     CENTER = 'CENTER', 'Center'
     RIGHT = 'RIGHT', 'Right'
 
-class SpecialAttribute(models.Model):
+class SpecialAttributes(models.Model):
     code = models.CharField(
         max_length=15,
         choices=[
@@ -35,7 +35,7 @@ class Text(models.Model):
         choices=Alignement.choices,
         default=Alignement.CENTER
     )
-    special_attributes = models.ManyToManyField('SpecialAttributes')
+    special_attributes = models.ManyToManyField('SpecialAttributes', related_name='specials')
 
 class ImageElement(models.Model):
     url = models.CharField(max_length=128, help_text="link to the image")
@@ -51,11 +51,11 @@ class DesignNotification(models.Model):
     display_duration = models.PositiveIntegerField(default=5, help_text="Notification display duration in seconds")
 
 class Notifications(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=64)
     title = models.CharField(max_length=64, unique=True)
-    content = models.ManyToManyField('Text')
-    images = models.ManyToManyField('ImageElement')
+    content = models.ManyToManyField('Text', related_name='contents')
+    images = models.ManyToManyField('ImageElement', related_name='images')
     sender = models.CharField(max_length=128, default="Anonymous")
     receiver = models.CharField(max_length=128, default="Anonymous")
     is_read = models.BooleanField(default=False)
@@ -63,9 +63,14 @@ class Notifications(models.Model):
     priority = models.CharField(
         max_length=10,
         choices=NotificationPriority.choices,
-        default=NotificationPriority.LOW
+        default=NotificationPriority.LOW,
+        help_text="Define notification priority"
     )
-    design = models.ForeignKey('DesignNotification', on_delete=models.CASCADE)
+    design = models.ForeignKey(
+        'DesignNotification', 
+        on_delete=models.CASCADE,
+        help_text="Design settings for a single notification"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

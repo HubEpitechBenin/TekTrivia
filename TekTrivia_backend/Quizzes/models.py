@@ -1,40 +1,32 @@
 from django.db import models
-from enum import Enum, unique
-
 
 class QuizType(models.TextChoices):
-    QCM = 'QCM', 'Question à choix multiples'
-    QCU = 'QCU', 'Question à choix unique'
-    VRAI_FAUX = 'VF', 'Vrai ou Faux'
+    MULTIPLE_CHOICE = 'MCQ', 'Multiple Choice Question'
+    SINGLE_CHOICE = 'SCQ', 'Single Choice Question'
+    TRUE_FALSE = 'TF', 'True or False'
 
-class Type(Enum):
-    EX1 = "ex1"
-    EX2 = "ex2"
-    EX3 = "ex3"
+class Type(models.TextChoices):
+    EX1 = 'EX1', 'Ex1'
+    EX2 = 'EX2', 'Ex2'
+    EX3 = 'EX3', 'Ex3'
 
-class Difficulty(Enum):
-    EASY = "easy"
-    MEDIUM = "medium"
-    DIFFICULT = "difficult"
+class Difficulty(models.TextChoices):
+    EASY = 'EASY', 'Easy'
+    MEDIUM = 'MEDIUM', 'Medium'
+    DIFFICULT = 'DIFFICULT', 'Difficult'
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True, unique=True, editable=False)
-    # id = models.PositiveIntegerField(primary_key=True)
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField()
-    my_type = models.ForeignKey('Type', on_delete=models.CASCADE)
-    
-class Quiz(models.Model):
-    id = models.AutoField(primary_key=True)
-    quiz_type = models.ForeignKey('QuizType', on_delete=models.CASCADE)
-    category = models.ForeignKey('Category', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, unique=True)
-    points_awarded = models.IntegerField(default=0)
-    is_validated = models.BooleanField(default=False)
-    creator = models.CharField(max_length=100)
-    #liste des ressources qui sera du polymorphisme
-    #L'attribut virtuel de type Resource est automatiquement crée
-    
+    name = models.CharField(max_length=100, unique=True, help_text="Category name")
+    description = models.TextField(help_text="Description of the category")
+    my_type = models.CharField(
+        max_length=10,
+        choices=Type.choices
+    )
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+        ordering = ['name']
 
 class Resource(models.Model):
     RESOURCES_TYPE = [
@@ -42,39 +34,57 @@ class Resource(models.Model):
         ('video', 'Video'),
         ('audio', 'Audio'),
         ('link', 'Link'),
+        ('text', 'Text')
     ]
-    resources = models.ForeignKey(
-        Quiz,
-        related_name='contents',
-        on_delete=models.CASCADE
-    )
     type = models.CharField(max_length=10, choices=RESOURCES_TYPE)
-    file = models.FileField(upload_to='/contents')
+    file = models.FileField(upload_to='quiz_resources/')
     url = models.URLField(null=True, blank=True)
+
+    def clean(self):
+        """Validate that either file or URL is provided based on resource type"""
+        from django.core.exceptions import ValidationError
+        if self.type in ['image', 'video', 'audio'] and not self.file and not self.url:
+            raise ValidationError(f"{self.get_type_display()} resources require either a file or URL")
+        if self.type == 'link' and not self.url:
+            raise ValidationError("Link resources require a URL")
+
+class Quiz(models.Model):
+    id = models.AutoField(primary_key=True, unique=True, editable=True)
+    quiz_type = models.CharField(
+        max_length=10,
+        choices=QuizType.choices
+    )
+    category = models.ForeignKey('Category', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, unique=True)
+    points_awarded = models.IntegerField(default=0)
+    is_validated = models.BooleanField(default=False)
+    creator = models.CharField(max_length=100)
+    resources = models.ManyToManyField('Resource', related_name='resources')
+
+    class Meta:
+        verbose_name = 'Quiz'
+        verbose_name_plural = 'Quizzes'
+        ordering = ['name']
 
 class Question(models.Model):
     question = models.TextField()
-    answers = models.TextField()
-    good_answers = models.TextField()
-    list_images = models.TextField()
-    points = models.IntegerField()
-    difficulty = models.ForeignKey('Difficulty', on_delete=models.CASCADE)
-
-    def split_field(self, field_name, separator=','):
-        value = getattr(self, field_name, '')
-        if not value:
-            return []
-        return [item.strip() for item in value.split(separator) if item.strip()]
+    answers = models.ManyToManyField('Resource', related_name='possible_answers')
+    good_answers = models.ManyToManyField('Resource', related_name='good_answers')
+    points = models.PositiveIntegerField()
+    difficulty = models.CharField(
+        max_length=10, 
+        choices=Difficulty.choices
+    )
 
 class Badges(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     req_XP = models.PositiveIntegerField()
     picture_link = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
 
 class QuizBody(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
-    quiz = models.OneToOneField(Quiz, on_delete=models.CASCADE)
-    questions = models.ManyToManyField(Question, related_name='questions')
+    quiz = models.OneToOneField('Quiz', on_delete=models.CASCADE)
+    questions = models.ManyToManyField('Question', related_name='questions')
 
 # Create your models here.
