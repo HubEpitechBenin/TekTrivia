@@ -1,50 +1,76 @@
 from django.db import models
-from enum import Enum
-from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Optional, Literal, Tuple
-from django.contrib.postgres.fields import JSONField 
 
-@dataclass
-class Text:
-    content: str
-    color: str  # ex: "#FFFFFF"
-    font: str   # ex: "Arial", "Roboto"
-    size: int = 14  # en pixels
-    alignement: Literal['gauche', 'centre', 'droite'] = 'gauche'
-    special_attributes: List[Literal['bold', 'italic', 'underlined', 'border']] = field(default_factory=list)
+class NotificationPriority(models.TextChoices):
+    LOW = 'LOW', 'Low'
+    MEDIUM = 'MEDIUM', 'Medium'
+    HARD = 'HARD', 'Hard'
 
-@dataclass
-class ImageElement:
-    url: str
-    position: Tuple[int, int]  # (x, y) en pixels
-    size: Tuple[int, int]  # (width, height) en pixels
+class Alignement(models.TextChoices):
+    LEFT = 'LEFT', 'Left'
+    CENTER = 'CENTER', 'Center'
+    RIGHT = 'RIGHT', 'Right'
 
-@dataclass
-class DesignNotification:
-    background_color: str  # ex: "#000000"
-    border_radius: int  # en pixels
-    sender: str  # nom ou identifiant
-    display_duration: int = 5  # en secondes
-    images: Optional[List[ImageElement]] = field(default_factory=list)
-    date_notification: datetime = field(default_factory=datetime.now) #la date actuelle par défaut
+class SpecialAttributes(models.Model):
+    code = models.CharField(
+        max_length=15,
+        choices=[
+            ('BOLD', 'Bold'),
+            ('ITALIC', 'Italic'),
+            ('UNDERLINED', 'Underlined'),
+            ('BORDER', 'Border'),
+        ],
+        unique=True
+    )
+    def __str__(self):
+        return self.get_code_display()
 
-class Priority(Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
+class Text(models.Model):
+    content = models.TextField(help_text="Text content")
+    color = models.CharField(max_length=7, help_text="Text color in hexadecimal")
+    font = models.CharField(max_length=30, help_text="Font name as string")
+    size = models.PositiveIntegerField(default=14, help_text="Font size in pixels")
+    alignement = models.CharField(
+        max_length=10,
+        choices=Alignement.choices,
+        default=Alignement.CENTER
+    )
+    special_attributes = models.ManyToManyField('SpecialAttributes', related_name='specials')
+
+class ImageElement(models.Model):
+    url = models.CharField(max_length=128, help_text="link to the image")
+    x_position = models.PositiveIntegerField(help_text="position on x abscissa")
+    y_position = models.PositiveIntegerField(help_text="position on y abscissa")
+    x_size = models.PositiveIntegerField(help_text="size on x abscissa")
+    y_size = models.PositiveIntegerField(help_text="size on y abscissa")
+    border_radius = models.PositiveIntegerField(default=0, help_text="image border radius in pixels")
+
+class DesignNotification(models.Model):
+    background_color = models.CharField(max_length=7, help_text="Background color in hexadecimal") # ex: "#000000"
+    border_radius = models.PositiveIntegerField(help_text="Border radius in pixels") # en pixels
+    display_duration = models.PositiveIntegerField(default=5, help_text="Notification display duration in seconds")
 
 class Notifications(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=64)
-    content = JSONField() #liste d'objets JSON contenant des attributs de Text
     title = models.CharField(max_length=64, unique=True)
-    #content = models.TextField()
-    receiver = models.CharField(max_length=128)
+    content = models.ManyToManyField('Text', related_name='contents')
+    images = models.ManyToManyField('ImageElement', related_name='images')
+    sender = models.CharField(max_length=128, default="Anonymous")
+    receiver = models.CharField(max_length=128, default="Anonymous")
     is_read = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    priority = models.ForeignKey('Priority', on_delete=models.CASCADE)
-    # design = models.OneToOneField(DesignNotification, on_delete=models.CASCADE) #Une notification -> design unique, un design -> une notification
+    priority = models.CharField(
+        max_length=10,
+        choices=NotificationPriority.choices,
+        default=NotificationPriority.LOW,
+        help_text="Define notification priority"
+    )
+    design = models.ForeignKey(
+        'DesignNotification', 
+        on_delete=models.CASCADE,
+        help_text="Design settings for a single notification"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
