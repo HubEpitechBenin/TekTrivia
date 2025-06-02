@@ -1,13 +1,52 @@
 from rest_framework import views, status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from Users.serializers import PlayerLoginSerializer, AdminLoginSerializer, TokenSerializer
 from .auth_models import PlayerAuthToken, AdminAuthToken
 
 # authentication related views
 
+class CustomTokenRefreshView(TokenRefreshView):
+    """
+    Custom Token Refresh View to handle token refresh requests
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.data.get('refresh')
+
+        if not refresh_token:
+            return Response(
+                {'error': 'Refresh token is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Validate the refresh token
+            refresh = RefreshToken(refresh_token)
+
+            # Generate new access token
+            data = {
+                'access': str(refresh.access_token),
+                'refresh': str(refresh)
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+        except TokenError as e:
+            return Response(
+                {'error': f"Invalid refresh token: {str(e)}"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        except Exception as e:
+            return Response(
+                {'error': f"Token refresh failed: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class PlayerLoginView(views.APIView):
     """
