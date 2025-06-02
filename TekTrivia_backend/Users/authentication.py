@@ -50,23 +50,24 @@ class PlayerAuthenticationBackend(BaseBackend):
             return None
         except Exception as e:
             # Logging the exception
-            print(f"Authentication error: {str(e)}")
+            print(f"Player Authentication error: {str(e)}")
             return None
 
-@staticmethod
 class AdminAuthenticationBackend(BaseBackend):
-    def authenticate(username=None, password=None, **kwargs):
+    def authenticate(self, username=None, password=None, **kwargs):
         # Player authentication logic
         try:
-            user = Admin.objects.get(
-                Q (email=username)
-            )
+            user = Admin.objects.get(Q(email=username))
             if user.check_password(password):
-                if user.is_active == False:
+                if not user.is_active:
                     raise AuthenticationFailed("Account is not active")
                 return user
             return None
-        except Exception:
+        except Admin.DoesNotExist:
+            return None
+        except Exception as e:
+            # Logging the exception
+            print(f"Admin Authentication error: {str(e)}")
             return None
 
 class CustomJWTAuthentication(JWTAuthentication):
