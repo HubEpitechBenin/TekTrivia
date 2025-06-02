@@ -32,24 +32,25 @@ class CustomAuthenticationBackend(BaseBackend):
             return None
         except Exception as e:
             # Logging the exception
-            print(f"Authentication error: {e}")
+            print(f"Authentication error: {str(e)}")
             return None
 
 
 class PlayerAuthenticationBackend(BaseBackend):
-    @staticmethod
-    def authenticate(username=None, password=None, **kwargs):
+    def authenticate(self, username=None, password=None, **kwargs):
         # Player authentication logic
         try:
-            user = Player.objects.get(
-                Q(email=username) | Q(username=username)
-            )
+            user = Player.objects.get(Q(email=username) | Q(username=username))
             if user.check_password(password):
-                if user.is_active == False:
+                if not user.is_active:
                     raise AuthenticationFailed("Account is not active")
                 return user
             return None
-        except Exception:
+        except Player.DoesNotExist:
+            return None
+        except Exception as e:
+            # Logging the exception
+            print(f"Authentication error: {str(e)}")
             return None
 
 @staticmethod
