@@ -7,20 +7,34 @@ from Users.models import Player, Admin
 
 
 class CustomAuthenticationBackend(BaseBackend):
-
-    @staticmethod
-    def authenticate(request, email=None, password=None, **kwargs):
+    def authenticate(self, request, email=None, password=None, **kwargs):
         # Define the logic that gives access to a user
         # Here, I'll authenticate against both user models
         try:
-            user = Player.objects.get(email=email) or Admin.objects.get(email=email)
-            if user.check_password(password):
-                if user.is_active == False:
-                    raise AuthenticationFailed("Account is not active")
-                return user
+            # try to authenticate as Player first
+            try:
+                user = Player.objects.get(email=email)
+                if user.check_password(password):
+                    if not user.is_active:
+                        raise AuthenticationFailed("Inactive account")
+                    return user
+            except Player.DoesNotExist:
+                pass
+            # try to authenticate as Admin now
+            try:
+                user = Admin.objects.get(email=email)
+                if user.check_password(password):
+                    if not user.is_active:
+                        raise AuthenticationFailed("Inactive account")
+                    return user
+            except Admin.DoesNotExist:
+                pass
             return None
-        except Exception:
+        except Exception as e:
+            # Logging the exception
+            print(f"Authentication error: {e}")
             return None
+
 
 class PlayerAuthenticationBackend(BaseBackend):
     @staticmethod
