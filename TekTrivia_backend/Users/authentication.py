@@ -74,7 +74,6 @@ class CustomJWTAuthentication(JWTAuthentication):
     def get_user(self, validated_token):
         try:
             user_id = validated_token['user_id']
-            user_email = validated_token['email']
             user_role = validated_token['user_role']
 
             # Return the appropriate user based on existing roles
@@ -84,5 +83,7 @@ class CustomJWTAuthentication(JWTAuthentication):
                 return Admin.objects.get(id=user_id)
             else:
                 return None
-        except Exception:
-            return None
+        except (Player.DoesNotExist, Admin.DoesNotExist):
+            raise InvalidToken("User not found")
+        except Exception as e:
+            raise InvalidToken(f'Invalid token: {str(e)}')
