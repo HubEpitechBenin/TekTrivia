@@ -50,5 +50,4 @@ src/
 └── main.jsx                # App entry point
 ```
 
-```md
 To get started with the frontend, follow the [Installation guide](./installation).
