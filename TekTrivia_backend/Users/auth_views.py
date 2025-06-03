@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from TekTrivia.settings import FRONTEND_URL
+from Users.throttling import LoginRateThrottle
 from Users.serializers import PlayerLoginSerializer, AdminLoginSerializer, TokenSerializer
 from .auth_models import PlayerAuthToken, AdminAuthToken
 from .models import Player, Admin
@@ -62,28 +63,40 @@ class PlayerLoginView(views.APIView):
     API View for Player Login that returns JWT token if successful
     """
     permission_classes = [] # To allow anyone to use the view
+    throttle_classes = [LoginRateThrottle]
 
     def post(self, request):
-        """"
+        """
         Handles login request and returns JWT token
         """
-        # Validate incoming data with the appropriate serializer
-        serializer = PlayerLoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            # Validate incoming data with the appropriate serializer
+            serializer = PlayerLoginSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        # Retrieve authenticated user drom validated serializer
-        user = serializer.validated_data['user']
+            # Retrieve authenticated user from validated serializer
+            user = serializer.validated_data['user']
 
-        # Generate JWT tokens for the user
+            # Generate JWT tokens for the user
 
-        tokens = self.get_tokens_for_user(user)
-        token_serializer = TokenSerializer(data=tokens)
-        token_serializer.is_valid(raise_exception=True)
+            tokens = self.get_tokens_for_user(user)
+            token_serializer = TokenSerializer(data=tokens)
+            token_serializer.is_valid(raise_exception=True)
 
-        return Response(
-            token_serializer.data,
-            status=status.HTTP_200_OK
-        )
+            return Response(
+                token_serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except AuthenticationFailed as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Login failed: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def get_tokens_for_user(self, user):
         """
@@ -109,28 +122,40 @@ class AdminLoginView(views.APIView):
     API View for Player Login that returns JWT token if successful
     """
     permission_classes = []  # To allow anyone to use the view
+    throttle_classes = [LoginRateThrottle]
 
     def post(self, request):
         """"
         Handles login request and returns JWT token
         """
-        # Validate incoming data with the appropriate serializer
-        serializer = AdminLoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            # Validate incoming data with the appropriate serializer
+            serializer = AdminLoginSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        # Retrieve authenticated user drom validated serializer
-        user = serializer.validated_data['user']
+            # Retrieve authenticated user drom validated serializer
+            user = serializer.validated_data['user']
 
-        # Generate JWT tokens for the user
+            # Generate JWT tokens for the user
 
-        tokens = self.get_tokens_for_user(user)
-        token_serializer = TokenSerializer(data=tokens)
-        token_serializer.is_valid(raise_exception=True)
+            tokens = self.get_tokens_for_user(user)
+            token_serializer = TokenSerializer(data=tokens)
+            token_serializer.is_valid(raise_exception=True)
 
-        return Response(
-            token_serializer.data,
-            status=status.HTTP_200_OK
-        )
+            return Response(
+                token_serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except AuthenticationFailed as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Login failed: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def get_tokens_for_user(self, user):
         """
@@ -154,6 +179,7 @@ class AdminLoginView(views.APIView):
 # TODO - Implement logout view
 
 class PasswordResetTokenGenerator(PasswordResetTokenGenerator):
+    # def _make_hash_value(self, user: Player | Admin, timestamp):
     def _make_hash_value(self, user, timestamp):
         """
         Generate a hash value for the password reset token.
@@ -269,3 +295,52 @@ class PasswordResetConfirmView(views.APIView):
             )
 
 
+class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
+    def  _make_hash_value(self, user, timestamp):
+        return f"{user.id}{timestamp}{user.email_confirmed}"
+
+email_verification_token = EmailVerificationTokenGenerator()
+
+class EmailVerificationView(views.APIView):
+    """
+    View to handle email verification for users.
+    """
+    permission_classes = []
+
+    def get(self, request, uidb64, token):
+
+        try:
+            # Decode the user ID from the uidb64
+            uid = force_str(urlsafe_base64_decode(uidb64))
+
+            # Try to find the user by ID
+            try:
+                user = Player.objects.get(id=uid)
+            except Player.DoesNotExist:
+                try:
+                    user = Admin.objects.get(id=uid)
+                except Admin.DoesNotExist:
+                    return Response(
+                        {'error': 'Invalid verification link'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            # Validate the token
+            if not email_verification_token.check_token(user, token):
+                return Response(
+                    {'error': 'Invalid or expired verification link'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            # Mark the user's email as confirmed and activate the account
+            user.email_confirmed = True
+            user.is_active = True
+            user.save()
+
+            return Response(
+                {'message': 'Email verification successful'},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Email verification failed: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
