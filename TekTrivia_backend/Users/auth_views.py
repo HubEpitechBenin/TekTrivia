@@ -125,23 +125,34 @@ class AdminLoginView(views.APIView):
         """"
         Handles login request and returns JWT token
         """
-        # Validate incoming data with the appropriate serializer
-        serializer = AdminLoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            # Validate incoming data with the appropriate serializer
+            serializer = AdminLoginSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        # Retrieve authenticated user drom validated serializer
-        user = serializer.validated_data['user']
+            # Retrieve authenticated user drom validated serializer
+            user = serializer.validated_data['user']
 
-        # Generate JWT tokens for the user
+            # Generate JWT tokens for the user
 
-        tokens = self.get_tokens_for_user(user)
-        token_serializer = TokenSerializer(data=tokens)
-        token_serializer.is_valid(raise_exception=True)
+            tokens = self.get_tokens_for_user(user)
+            token_serializer = TokenSerializer(data=tokens)
+            token_serializer.is_valid(raise_exception=True)
 
-        return Response(
-            token_serializer.data,
-            status=status.HTTP_200_OK
-        )
+            return Response(
+                token_serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except AuthenticationFailed as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Login failed: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def get_tokens_for_user(self, user):
         """
