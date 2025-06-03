@@ -269,3 +269,53 @@ class PasswordResetConfirmView(views.APIView):
             )
 
 
+class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
+    def  _make_hash_value(self, user, timestamp):
+        return f"{user.id}{timestamp}{user.email_confirmed}"
+
+email_verification_token = EmailVerificationTokenGenerator()
+
+class EmailVerificationView(views.APIView):
+    """
+    View to handle email verification for users.
+    """
+    permission_classes = []
+
+    def get(self, request, uidb64, token):
+
+        try:
+            # Decode the user ID from the uidb64
+            uid = force_str(urlsafe_base64_decode(uidb64))
+
+            # Try to find the user by ID
+            try:
+                user = Player.objects.get(id=uid)
+            except Player.DoesNotExist:
+                try:
+                    user = Admin.objects.get(id=uid)
+                except Admin.DoesNotExist:
+                    return Response(
+                        {'error': 'Invalid verification link'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            # Validate the token
+            if not email_verification_token.check_token(user, token):
+                return Response(
+                    {'error': 'Invalid or expired verification link'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            # Mark the user's email as confirmed and activate the account
+            user.email_confirmed = True
+            user.is_active = True
+            user.save()
+
+            return Response(
+                {'message': 'Email verification successful'},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Email verification failed: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
