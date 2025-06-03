@@ -241,12 +241,10 @@ class RequestPasswordResetView(views.APIView):
 class PasswordResetConfirmView(views.APIView):
     permission_classes = []
 
-    def post(self, request):
+    def post(self, request, uid, token):
         """
         Handle password reset confirmation and update the user's password.
         """
-        uid = request.data.get('uid')
-        token = request.data.get('token')
         new_password = request.data.get('new_password')
 
         if not (uid and token and new_password):

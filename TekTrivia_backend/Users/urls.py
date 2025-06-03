@@ -26,7 +26,7 @@ urlpatterns = [
 
     # Password reset endpoints
     path('auth/password/reset/', RequestPasswordResetView.as_view(), name='password_reset'),
-    path('auth/password/reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('auth/password/reset/confirm/<str:uid>/<str:token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 
     # Email verification endpoint
     path('auth/verify-email/<str:uidb64>/<str:token>/', EmailVerificationView.as_view(), name='email_verification'),
