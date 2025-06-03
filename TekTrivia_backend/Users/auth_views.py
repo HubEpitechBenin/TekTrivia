@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from TekTrivia.settings import FRONTEND_URL
+from Users.throttling import LoginRateThrottle
 from Users.serializers import PlayerLoginSerializer, AdminLoginSerializer, TokenSerializer
 from .auth_models import PlayerAuthToken, AdminAuthToken
 from .models import Player, Admin
@@ -62,6 +63,7 @@ class PlayerLoginView(views.APIView):
     API View for Player Login that returns JWT token if successful
     """
     permission_classes = [] # To allow anyone to use the view
+    throttle_classes = [LoginRateThrottle]
 
     def post(self, request):
         """
@@ -120,6 +122,7 @@ class AdminLoginView(views.APIView):
     API View for Player Login that returns JWT token if successful
     """
     permission_classes = []  # To allow anyone to use the view
+    throttle_classes = [LoginRateThrottle]
 
     def post(self, request):
         """"
@@ -341,4 +344,3 @@ class EmailVerificationView(views.APIView):
                 {'error': f'Email verification failed: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
