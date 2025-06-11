@@ -1,5 +1,4 @@
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -17,7 +16,7 @@ from Users.throttling import LoginRateThrottle
 from Users.serializers import PlayerLoginSerializer, AdminLoginSerializer, TokenSerializer
 from .auth_models import PlayerAuthToken, AdminAuthToken
 from .models import Player, Admin
-
+from .tokens import password_reset_token, email_verification_token
 
 # authentication related views
 
@@ -178,18 +177,6 @@ class AdminLoginView(views.APIView):
 
 # TODO - Implement logout view
 
-class PasswordResetTokenGenerator(PasswordResetTokenGenerator):
-    # def _make_hash_value(self, user: Player | Admin, timestamp):
-    def _make_hash_value(self, user, timestamp):
-        """
-        Generate a hash value for the password reset token.
-        This includes the user's ID, email, and the timestamp.
-        """
-        return f"{user.id}{timestamp}{user.is_active}"
-
-
-password_reset_token = PasswordResetTokenGenerator()
-
 class RequestPasswordResetView(views.APIView):
     permission_classes = []
 
@@ -293,11 +280,6 @@ class PasswordResetConfirmView(views.APIView):
             )
 
 
-class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
-    def  _make_hash_value(self, user, timestamp):
-        return f"{user.id}{timestamp}{user.email_confirmed}"
-
-email_verification_token = EmailVerificationTokenGenerator()
 
 class EmailVerificationView(views.APIView):
     """

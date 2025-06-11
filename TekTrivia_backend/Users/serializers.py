@@ -8,12 +8,13 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import Token
 
 from TekTrivia.settings import FRONTEND_URL
-from Users.auth_views import email_verification_token
 from Users.authentication import PlayerAuthenticationBackend, AdminAuthenticationBackend
 from Users.models import Player, Admin
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password, check_password
+from .tokens import email_verification_token
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
