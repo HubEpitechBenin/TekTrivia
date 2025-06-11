@@ -5,6 +5,7 @@ import Home from './pages/home/Home'
 import Login from './pages/login/Login'
 import PageTransition from './components/layout/PageTransition'
 import Rank from "./pages/ranking/Rank"
+import Dashboard from "./pages/dashboard/Dashboard"
 
 function App() {
   return (
@@ -12,9 +13,10 @@ function App() {
       <BrowserRouter>
         <PageTransition>
           <Routes>
-            <Route path="/rank" element={<Rank />} />
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/rank" element={<Rank />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </PageTransition>
       </BrowserRouter>

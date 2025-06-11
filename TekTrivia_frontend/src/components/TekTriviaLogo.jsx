@@ -1,15 +1,12 @@
 import React from 'react'
 
-const TekTriviaLogo = () => {
+const TekTriviaLogo = ({className}) => {
   return (
     <div>
-        {/* <span className="text-2xl font-bold">
-            TekTrivia
-        </span> */}
         <img
           src="/TekTrivia.svg"
           alt="TekTrivia Logo"
-          className="w-20 h-20"
+          className={className}
         />
     </div>
   )

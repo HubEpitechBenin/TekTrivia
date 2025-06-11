@@ -8,7 +8,9 @@ const Header = () => {
   return (
     <div className="bg-white border-b border-pm-blue300 items-center justify-between dark:border dark:border-pm-rBorder dark:bg-pm-rBlack dark:text-white flex min-h-[6%] w-full box-border  text-black">
         <div className="w-[70%] px-[4%] flex items-center justify-start">
-          <TekTriviaLogo/>
+          <TekTriviaLogo
+            className="w-32 h-32"
+          />
         </div>
         <div className="w-[30%] h-[50%] flex items-center justify-end mx-8 box-border gap-6">
           <ThemeSwitcher

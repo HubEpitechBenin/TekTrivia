@@ -8,7 +8,9 @@ import ThemeSwitcher from '../../../components/layout/ThemeSwitcher'
 const Navbar = () => {
   return (
     <nav className="flex items-center justify-between">
-        <TekTriviaLogo/>
+        <TekTriviaLogo
+          className="w-32 h-32"
+        />
         <div className="w-[60%] h-full">
           Menu
         </div>

@@ -18,6 +18,8 @@ export default {
             r12:            '#0D1117',
             rBorder:        '#3D444D',
             rBlack:         '#010409',
+            
+            borderGray: '#D5D2D2',
 
             // light:          '#EFF5FF'
             light:          '#e0e5ec'
