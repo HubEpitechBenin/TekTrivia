@@ -30,7 +30,7 @@ This command generates static content into the `build` directory and can be serv
 $ npm run start
 ```
 
-This command starts the static project on 3000 port
+This command starts the static web site on 3000 port
 
 ### Deployment
 

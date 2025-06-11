@@ -1,8 +1,14 @@
 from tokenize import PlainToken
 
+from django.core.mail import send_mail
+from django.template.defaultfilters import default
+from django.utils.http import urlsafe_base64_encode
+from jwt.utils import force_bytes
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import Token
 
+from TekTrivia.settings import FRONTEND_URL
+from Users.auth_views import email_verification_token
 from Users.authentication import PlayerAuthenticationBackend, AdminAuthenticationBackend
 from Users.models import Player, Admin
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
@@ -84,6 +90,12 @@ class PlayerLoginSerializer(serializers.Serializer):
         if not user:
             raise serializers.ValidationError('Invalid credentials')
 
+        # if not user.email_confirmed:
+        #     raise serializers.ValidationError('Email not confirmed')
+
+        # if not user.is_active:
+        #     raise serializers.ValidationError('Account is not active')
+
         # Add authenticated user to the validated_data
         data['user'] = user
         return data
@@ -115,6 +127,11 @@ class AdminLoginSerializer(serializers.Serializer):
         )
         if not user:
             raise serializers.ValidationError('Invalid credentials')
+
+        # if not user.email_confirmed:
+        #     raise serializers.ValidationError('Email not confirmed')
+        # if not user.is_active:
+        #     raise serializers.ValidationError('Account is not active')
 
         # Add authenticated user to the validated_data
         data['user'] = user
@@ -158,7 +175,7 @@ class PlayerRegistrationSerializer(serializers.Serializer):
         validated_data['password'] = make_password(validated_data['password'])
         # Set default values for the Player objects
         validated_data['role'] = 'player'
-        validated_data['is_active'] = True
+        # validated_data['is_active'] = False
 
         # Include initial rank assignation
 
@@ -170,9 +187,27 @@ class PlayerRegistrationSerializer(serializers.Serializer):
             username=validated_data['username'],
             phone=validated_data['phone'],
             role=validated_data['role'],
-            is_active=validated_data['is_active']
+            is_active=False,
+            email_confirmed=False # useless code, the default is false, but just to be sure
         )
 
+        # Generate token and uid for email verification
+        uid = urlsafe_base64_encode(force_bytes(player.id))
+        token = email_verification_token.make_token(player)
+
+        # Create the verification link
+        verification_link = FRONTEND_URL + f"/verify-email/{uid}/{token}/"
+
+        # Send verification email
+        # TODO - replace with a proper email service when available
+        send_mail(
+            subject='Email Verification',
+            message=f'Please verify your email by clicking the following link: {verification_link}',
+            from_email="noreply@tektrivia.com",
+            recipient_list=[player.email]
+        )
+
+        # Return the created player instance
         return player
 
 
