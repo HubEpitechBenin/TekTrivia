@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'Quizzes.apps.QuizzesConfig',
     'Blog.apps.BlogConfig',
     'Achievements.apps.AchievementsConfig',
-    'Users.apps.UsersConfig'
+    'Users.apps.UsersConfig',
+    'core.apps.CoreConfig'
 ]
 
 MIDDLEWARE = [
