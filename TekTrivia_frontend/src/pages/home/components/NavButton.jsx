@@ -14,7 +14,7 @@ const NavButton = ({ to, label }) => {
     <Link
       to={to}
       className={`transition-colors font-medium ${
-        isActive ? "text-purple-600" : "text-gray-600 hover:text-gray-900"
+        isActive ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
       }`}
     >
       {label}

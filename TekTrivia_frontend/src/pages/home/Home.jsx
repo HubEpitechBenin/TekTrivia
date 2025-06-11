@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import FeaturesSection from "./components/FeaturesSection";
 import HeroSection from "./components/HeroSection";
 import StatsSection from "./components/StatsSection";
+import TestimonialSection from "./components/TestimonialSection";
 
 const Home = () => {
   return (
@@ -34,7 +35,11 @@ const Home = () => {
           <TopPlayers />
         </div>
       </section>
-
+      <section className="min-h-[60vh] py-12 sm:py-16 px-4 sm:px-6 md:px-10 lg:px-20 bg-white-200">
+        <div className="w-full max-w-7xl mx-auto">
+          <TestimonialSection />
+        </div>
+      </section>
       <Footer />
     </div>
   );
