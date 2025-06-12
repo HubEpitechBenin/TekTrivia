@@ -6,6 +6,8 @@ import FeaturesSection from "./components/FeaturesSection";
 import HeroSection from "./components/HeroSection";
 import StatsSection from "./components/StatsSection";
 import TestimonialSection from "./components/TestimonialSection";
+import ChatBot from "../ChatBot";
+import SmartChatBot from "../chatbot/components/SmartChatBot";
 
 const Home = () => {
   return (
@@ -24,7 +26,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="min-h-[40vh] py-12 sm:py-16 px-44 sm:px-6 md:px-10 lg:px-20 bg-pm-blue">
+      <section className="min-h-[40vh] py-12 sm:py-16 px-4 sm:px-6 md:px-10 lg:px-20 bg-pm-blue">
         <div className="w-full max-w-7xl mx-auto">
           <StatsSection />
         </div>
@@ -35,9 +37,10 @@ const Home = () => {
           <TopPlayers />
         </div>
       </section>
-      <section className="min-h-[60vh] py-12 sm:py-16 px-4 sm:px-6 md:px-10 lg:px-20 bg-white-200">
+      <section className="min-h-[60vh] py-12 sm:py-16 px-4 sm:px-6 md:px-10 lg:px-20 bg-pm-blue">
         <div className="w-full max-w-7xl mx-auto">
           <TestimonialSection />
+          <SmartChatBot />
         </div>
       </section>
       <Footer />
