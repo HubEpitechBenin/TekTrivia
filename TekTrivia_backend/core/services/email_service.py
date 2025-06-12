@@ -10,7 +10,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from Users.tokens import email_verification_token, password_reset_token
-from Users.models import BaseUser
+from Users.models import BaseUser, Player, Admin
 
 logger = logging.getLogger(__name__)
 
