@@ -9,7 +9,7 @@ const askAI = async (prompt: string): Promise<string> => {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "deepseek/deepseek-r1-zero:free", //"gpt-4", // ou "gpt-3.5-turbo"
+      model: "deepseek/deepseek-r1-zero:free", //"gpt-4", ou "gpt-3.5-turbo"
       messages: [{ role: "client assistance", content: prompt }],
       temperature: 0.7,
     }),
