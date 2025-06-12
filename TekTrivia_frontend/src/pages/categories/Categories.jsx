@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // import Header from './components/Header'
 // import MainSection from './components/MainSection'
 
-const Rank = () => {
+const Categories = () => {
   return (
     <div className="bg-white flex flex-col h-screen w-full box-border overflow-y-auto no-scrollbar">
       <Header />
@@ -11,4 +11,4 @@ const Rank = () => {
   );
 };
 
-export default Rank;
+export default Categories;

@@ -1,15 +1,14 @@
-import React from 'react'
+import React from "react";
 
 const TekTriviaLogo = ({className}) => {
   return (
     <div>
-        <img
-          src="/TekTrivia.svg"
-          alt="TekTrivia Logo"
-          className={className}
-        />
+      {/* <span className="text-2xl font-bold">
+            TekTrivia
+        </span> */}
+      <img src="/TekTrivia.svg" alt="TekTrivia Logo" className="w-20 h-20" />
     </div>
-  )
-}
+  );
+};
 
-export default TekTriviaLogo
+export default TekTriviaLogo;

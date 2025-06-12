@@ -1,49 +1,38 @@
 import { Play } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-const getColorClasses = (color) => {
-  switch (color) {
-    case 'red':
-      return 'bg-gradient-to-br from-red-400 to-red-500';
-    case 'cyan':
-      return 'bg-gradient-to-br from-cyan-400 to-cyan-500';
-    case 'navy':
-      return 'bg-gradient-to-br from-blue-800 to-blue-900';
-    case 'green':
-      return 'bg-gradient-to-br from-green-500 to-green-600';
-    case 'pink':
-      return 'bg-gradient-to-br from-pink-400 to-pink-500';
-    default:
-      return 'bg-gradient-to-br from-gray-400 to-gray-500';
-  }
-};
-
 const QuizCard = ({ color, title, description, questions, plays }) => {
   return (
-    <div className={`${getColorClasses(color)} rounded-xl p-6 text-white relative overflow-hidden group hover:scale-105 transition-transform duration-200 cursor-pointer`}>
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <button className="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center space-x-2 transition-colors">
-            <Play size={16} fill="currentColor" />
-            <span className="font-medium">Play</span>
-          </button>
-        </div>
-
-        <h3 className="text-xl font-bold mb-4">{title}</h3>
-
-        <div className="flex items-center justify-between text-sm mb-4">
-          <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-3 py-1">
-            {questions} Qs
-          </div>
-          <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-3 py-1">
-            {plays} Plays
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer w-80 h-auto">
+      {/* Top colored section */}
+      <div className={`${color} rounded-b-[40px] h-32 relative flex items-center justify-center p-4`}>
+        {/* Play button - positioned absolutely in top right */}
+        <div className="absolute top-3 right-3 z-10">
+          <div className="bg-white rounded-full px-3 py-1 flex items-center space-x-1 shadow-sm">
+            <div className="w-0 h-0 border-l-[6px] border-l-blue-500 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent"></div>
+            <span className="text-blue-500 text-sm font-medium">Play</span>
           </div>
         </div>
-
-        <p className="text-sm opacity-90 leading-relaxed">{description}</p>
+        
+        {/* Title - centered */}
+        <h3 className="text-white text-xl font-bold text-center px-4">{title}</h3>
       </div>
-
-      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-200"></div>
+      
+      {/* Bottom white section - clearly separated */}
+      <div className="p-4 bg-white min-h-[120px] flex flex-col">
+        {/* Stats badges - centered with proper spacing */}
+        <div className="flex items-center justify-center space-x-4 mb-3">
+          <div className="bg-gray-100 rounded-full px-3 py-1">
+            <span className="text-gray-700 text-sm font-medium">{questions} Qs</span>
+          </div>
+          <div className="bg-gray-100 rounded-full px-3 py-1">
+            <span className="text-gray-700 text-sm font-medium">{plays} Plays</span>
+          </div>
+        </div>
+        
+        {/* Description */}
+        <p className="text-gray-600 text-sm text-center leading-relaxed flex-1">{description}</p>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { Plus } from 'lucide-react';
+import Modal from '../../../components/layout/Modal';
+import QuizCreationModal from './QuizCreationModal';
 
 const CategoryFilter = () => {
+  const [showModal, setShowModal] = useState(false);
   const categories = [
     { name: 'All categories', active: true },
     { name: 'Mathematics', active: false },
@@ -30,7 +34,10 @@ const CategoryFilter = () => {
       </div>
       
       <div className="flex items-center space-x-4">
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors">
+        <button 
+          onClick={() => setShowModal(true)}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+        >
           <Plus size={16} />
           <span>Create a quiz</span>
         </button>
@@ -38,6 +45,15 @@ const CategoryFilter = () => {
           See All
         </button>
       </div>
+
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        title="Create a New Quiz"
+      >
+        <QuizCreationModal/>
+      </Modal>
+
     </div>
   );
 };

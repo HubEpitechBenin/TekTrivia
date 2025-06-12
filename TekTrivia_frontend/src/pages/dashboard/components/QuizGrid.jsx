@@ -3,49 +3,49 @@ import QuizCard from './QuizCard';
 const QuizGrid = () => {
   const quizzes = [
     {
-      color: 'red',
+      color: 'bg-[#ED4C5C]',
       title: 'TekTrivia',
       description: 'Multiples, Factors, Primes, Squares, and Cubes',
       questions: 56,
       plays: '1k'
     },
     {
-      color: 'cyan',
+      color: 'bg-[#42ADE2]',
       title: 'TekTrivia',
       description: 'Multiples, Factors, Primes, Squares, and Cubes',
       questions: 56,
       plays: '1k'
     },
     {
-      color: 'navy',
+      color: 'bg-[#093F68]',
       title: 'TekTrivia',
       description: 'Multiples, Factors, Primes, Squares, and Cubes',
       questions: 56,
       plays: '1k'
     },
     {
-      color: 'green',
+      color: 'bg-[#699635]',
       title: 'TekTrivia',
       description: 'Multiples, Factors, Primes, Squares, and Cubes',
       questions: 56,
       plays: '1k'
     },
     {
-      color: 'pink',
+      color: 'bg-[#ED5C5C]',
       title: 'TekTrivia',
       description: 'Multiples, Factors, Primes, Squares, and Cubes',
       questions: 56,
       plays: '1k'
     },
     {
-      color: 'navy',
+      color: 'bg-[#ED4C8C]',
       title: 'TekTrivia',
       description: 'Multiples, Factors, Primes, Squares, and Cubes',
       questions: 56,
       plays: '1k'
     },
     {
-      color: 'red',
+      color: 'bg-[#ED1C9C]',
       title: 'TekTrivia',
       description: 'Multiples, Factors, Primes, Squares, and Cubes',
       questions: 56,

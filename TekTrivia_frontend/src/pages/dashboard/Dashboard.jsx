@@ -12,7 +12,7 @@ const Dashboard = () => {
       <Sidebar />
       <div className="ml-20">
         <Header/>
-        <main className="p-8">
+        <main className="p-12">
           <Hero/>
           <CategoryFilter/>
           <QuizGrid/>
