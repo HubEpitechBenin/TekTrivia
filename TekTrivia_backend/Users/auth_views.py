@@ -14,10 +14,10 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from TekTrivia.settings import FRONTEND_URL
 from Users.throttling import LoginRateThrottle
 from Users.serializers import PlayerLoginSerializer, AdminLoginSerializer, TokenSerializer
-from .auth_models import PlayerAuthToken, AdminAuthToken
-from .models import Player, Admin
-from .tokens import password_reset_token, email_verification_token
-
+from Users.auth_models import PlayerAuthToken, AdminAuthToken
+from Users.models import Player, Admin
+from Users.tokens import password_reset_token, email_verification_token
+from core.services.email_service import EmailService
 # authentication related views
 
 class CustomTokenRefreshView(TokenRefreshView):
@@ -203,22 +203,11 @@ class RequestPasswordResetView(views.APIView):
                     {"message": "If an account with this email exists, a password reset link has been sent."},
                     status=status.HTTP_200_OK
                 )
-        # Generate a password reset token and uid
-        uid = urlsafe_base64_encode(force_bytes(user.id))
-        token = password_reset_token.make_token(user)
 
-        # Create a password reset link
-        reset_link = FRONTEND_URL + "/reset-password/{uid}/{token}/"
 
-        # Send the reset link to the user's email
-        # TODO - Implement email service or use an existing one (e.g., Django's send_mail)
-        # TODO - Implement email sending logic
-        send_mail(
-            subject="Password Reset Request",
-            message=f"Click the link to reset your password: {reset_link.format(uid=uid, token=token)}",
-            from_email="noreply@tektrivia.com", #doesn't exist, just a placeholder
-            recipient_list=[email]
-        )
+        # Send password reset email
+        EmailService.send_password_reset_email(user)
+
         return Response(
             {"message": "If an account with this email exists, a password reset link has been sent."},
             status=status.HTTP_200_OK

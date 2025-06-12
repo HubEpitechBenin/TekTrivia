@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from Users.models import Player, Admin
 from Users.serializers import PlayerRegistrationSerializer, AdminRegistrationSerializer
+from core.services.email_service import EmailService
 
 
 # Create your views here.
@@ -21,9 +22,15 @@ class LoginTestView(APIView):
         )
 
 
-
 class PlayerViewSet(viewsets.ModelViewSet):
     model = Player
+
+    def perform_create(self, serializer):
+        """Override to handle custom logic after player creation."""
+        player = serializer.save()
+        #Send verification mail
+        EmailService.send_verification_email(player)
+
 
     def create(self, request, **kwargs):
         serializer = PlayerRegistrationSerializer(data=request.data)
