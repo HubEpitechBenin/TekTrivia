@@ -11,6 +11,12 @@ from django.utils.http import urlsafe_base64_encode
 
 from Users.tokens import email_verification_token, password_reset_token
 from Users.models import BaseUser, Player, Admin
+from mailjet_rest import Client
+import os
+
+mailjet_api_key = os.environ.get('EMAIL_HOST_USER')
+mailjet_api_secret = os.environ.get('EMAIL_HOST_PASSWORD')
+mailjet = Client(auth=(mailjet_api_key, mailjet_api_secret))
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +49,15 @@ class EmailService:
             from_email = settings.DEFAULT_FROM_EMAIL
 
         try:
+            # data = {
+            #     "FromEmail": from_email,
+            #     "FromName": "TekTrivia",
+            #     "Subject": subject,
+            #     "Text-part": message,
+            #     "Html-part": html_message if html_message else None,
+            #     "Recipients": [{"Email": recipient} for recipient in recipient_list]
+            # }
+            # result = mailjet.send.create(data=data)
             send_mail(
                 subject=subject,
                 message=message,
@@ -52,6 +67,8 @@ class EmailService:
                 fail_silently=False,
             )
             logger.info(f"Email sent successfully to {', '.join(recipient_list)}")
+            # logger.info("result: %s", result.status_code)
+            # logger.info(f"{result.json()}")
             return True
         except Exception as e:
             logger.error(f"Failed to send email: {str(e)}")
@@ -88,21 +105,29 @@ class EmailService:
             # Create plain text content by stripping HTML
             text_content = strip_tags(html_content)
 
-            # Create email message
-            email = EmailMultiAlternatives(
+            return cls.send_email(
                 subject=subject,
-                body=text_content,
-                from_email=from_email,
-                to=recipient_list
+                message=text_content,
+                recipient_list=recipient_list,
+                html_message=html_content,
+                from_email=from_email
             )
 
+            # Create email message
+            # email = EmailMultiAlternatives(
+            #     subject=subject,
+            #     body=text_content,
+            #     from_email=from_email,
+            #     to=recipient_list
+            # )
+
             # Attach HTML content
-            email.attach_alternative(html_content, "text/html")
+            # email.attach_alternative(html_content, "text/html")
 
             # Send email
-            email.send(fail_silently=False)
-            logger.info(f"Templated email sent successfully to {', '.join(recipient_list)}")
-            return True
+            # email.send(fail_silently=False)
+            # logger.info(f"Templated email sent successfully to {', '.join(recipient_list)}")
+            # return True
         except Exception as e:
             logger.error(f"Failed to send templated email: {str(e)}")
             return False
