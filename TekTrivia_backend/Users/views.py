@@ -1,3 +1,4 @@
+from django.db.transaction import atomic
 from django.shortcuts import render
 from rest_framework import viewsets, views, status, response
 from rest_framework.permissions import IsAuthenticated
@@ -25,17 +26,23 @@ class LoginTestView(APIView):
 class PlayerViewSet(viewsets.ModelViewSet):
     model = Player
 
-    def perform_create(self, serializer):
-        """Override to handle custom logic after player creation."""
-        player = serializer.save()
-        #Send verification mail
-        EmailService.send_verification_email(player)
+    # def perform_create(self, serializer):
+    #     """Override to handle custom logic after player creation."""
+    #     player = serializer.save()
+    #     #Send verification mail
+    #     EmailService.send_verification_email(player)
 
-
+    @atomic
     def create(self, request, **kwargs):
         serializer = PlayerRegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        EmailService.send_email(
+            subject="Welcome to Our Game!",
+            message="Thank you for registering! Please verify your email.",
+            recipient_list=[serializer.validated_data['email']],
+
+        )
         return response.Response(
             {
                 "message": "Player registered successfully!"
@@ -46,6 +53,7 @@ class PlayerViewSet(viewsets.ModelViewSet):
 class AdminViewSet(viewsets.ModelViewSet):
     model = Admin
 
+    @atomic
     def create(self, request, **kwargs):
         serializer = AdminRegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
