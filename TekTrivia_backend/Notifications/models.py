@@ -22,10 +22,15 @@ class SpecialAttributes(models.Model):
         ],
         unique=True
     )
+    class Meta:
+        verbose_name = 'SpecialAttribute'
+        verbose_plural_name = 'SpecialAttributes'
+    
     def __str__(self):
         return self.get_code_display()
 
 class Text(models.Model):
+    id = models.AutoField(primary_key=True, unique=True, editable=False)
     content = models.TextField(help_text="Text content")
     color = models.CharField(max_length=7, help_text="Text color in hexadecimal")
     font = models.CharField(max_length=30, help_text="Font name as string")
@@ -36,8 +41,13 @@ class Text(models.Model):
         default=Alignement.CENTER
     )
     special_attributes = models.ManyToManyField('SpecialAttributes', related_name='specials')
+    class Meta:
+        verbose_name = 'Text'
+        verbose_plural_name = 'Texts'
+        ordering = ['id']
 
 class ImageElement(models.Model):
+    id = models.AutoField(primary_key=True, unique=True, editable=False)
     url = models.CharField(max_length=128, help_text="link to the image")
     x_position = models.PositiveIntegerField(help_text="position on x abscissa")
     y_position = models.PositiveIntegerField(help_text="position on y abscissa")
@@ -45,13 +55,22 @@ class ImageElement(models.Model):
     y_size = models.PositiveIntegerField(help_text="size on y abscissa")
     border_radius = models.PositiveIntegerField(default=0, help_text="image border radius in pixels")
 
+    class Meta:
+        verbose_name = 'ImageElement'
+        verbose_plural_name = 'ImageElements'
+        ordering = ['id']
+
 class DesignNotification(models.Model):
     background_color = models.CharField(max_length=7, help_text="Background color in hexadecimal") # ex: "#000000"
     border_radius = models.PositiveIntegerField(help_text="Border radius in pixels") # en pixels
     display_duration = models.PositiveIntegerField(default=5, help_text="Notification display duration in seconds")
 
+    class Meta:
+        verbose_name = 'DesignNotification'
+        verbose_plural_name = 'DesignNotifications'
+
 class Notifications(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True, editable=False)
     type = models.CharField(max_length=64)
     title = models.CharField(max_length=64, unique=True)
     content = models.ManyToManyField('Text', related_name='contents')
@@ -73,5 +92,10 @@ class Notifications(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Notification'
+        verbose_plural_name = 'Notifications'
+        ordering = ['id']
 
 # Create your models here.
