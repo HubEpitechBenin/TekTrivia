@@ -6,9 +6,9 @@ class QuizType(models.TextChoices):
     TRUE_FALSE = 'TF', 'True or False'
 
 class Type(models.TextChoices):
-    VIDEO_GAMES = 'EX1', 'Ex1'
-    CYBERSECURITY = 'EX2', 'Ex2'
-    AI = 'EX3', 'Ex3'
+    VIDEO_GAMES = 'VD', 'Vd'
+    CYBERSECURITY = 'CS', 'Cs'
+    AI = 'AI', 'Ai'
 
 class Difficulty(models.TextChoices):
     EASY = 'EASY', 'Easy'
@@ -39,7 +39,7 @@ class Resource(models.Model):
         ('text', 'Text')
     ]
     type = models.CharField(max_length=10, choices=RESOURCES_TYPE)
-    file = models.FileField(upload_to='quiz_resources/')
+    file = models.FileField(upload_to='quiz_resources/', null=True, blank=True)
     url = models.URLField(null=True, blank=True)
 
     def clean(self):
