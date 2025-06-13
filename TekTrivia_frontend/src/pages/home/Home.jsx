@@ -6,7 +6,6 @@ import FeaturesSection from "./components/FeaturesSection";
 import HeroSection from "./components/HeroSection";
 import StatsSection from "./components/StatsSection";
 import TestimonialSection from "./components/TestimonialSection";
-import ChatBot from "../ChatBot";
 import SmartChatBot from "../chatbot/components/SmartChatBot";
 
 const Home = () => {

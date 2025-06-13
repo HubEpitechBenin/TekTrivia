@@ -29,56 +29,75 @@ const features = [
   },
 ];
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i) => ({
+// Container animation for staggered children
+const container = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+// Animation for each feature card
+const cardVariant = {
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  visible: {
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.2, duration: 0.6 },
-  }),
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
 };
 
 const FeaturesSection = () => {
   const { ref, inView } = useInView({
-    triggerOnce: true, // Animates only once
-    threshold: 0.3, // Triggers animation when 30% of the section is visible
+    triggerOnce: true,
+    threshold: 0.3,
   });
 
   return (
     <section
       ref={ref}
-      className="py-20 px-6 sm:px-12 bg-gradient-to-b font-sans"
+      className="py-20 px-6 sm:px-12 bg-gradient-to-bfont-sans"
     >
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="text-center mb-16">
           <motion.h2
             className="text-4xl sm:text-5xl font-extrabold text-gray-900"
-            initial={{ opacity: 0, y: -30 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             Why TekTrivia?
           </motion.h2>
           <motion.p
             className="mt-4 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.3, duration: 0.6 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
           >
             The most comprehensive tech quiz platform to test and improve your
             skills.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        {/* Feature Cards */}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"
+          variants={container}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+        >
           {features.map((feature, i) => (
             <motion.div
               key={i}
               className="bg-white rounded-2xl shadow-md p-6 text-center group hover:shadow-xl transition duration-300"
-              variants={fadeInUp}
-              initial="hidden"
-              animate={inView ? "visible" : "hidden"}
-              custom={i}
+              variants={cardVariant}
             >
               <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transform transition duration-300">
                 <feature.icon className="w-8 h-8 text-blue-600" />
@@ -91,7 +110,7 @@ const FeaturesSection = () => {
               </p>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
