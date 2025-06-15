@@ -1,4 +1,6 @@
 import React from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import UserCard from "./UserCard";
 
 const TopPlayers = () => {
@@ -23,6 +25,11 @@ const TopPlayers = () => {
     },
   ];
 
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.3,
+  });
+
   return (
     <div className="bg-white py-16">
       <div className="text-center px-4 sm:px-10">
@@ -34,16 +41,35 @@ const TopPlayers = () => {
         </p>
       </div>
 
-      <div className="px-4 sm:px-10 mt-12 flex flex-wrap justify-center gap-6 sm:gap-10">
+      {/* Animation et réactivité améliorée */}
+      <motion.div
+        ref={ref}
+        className="px-4 sm:px-10 mt-12 flex flex-wrap justify-center gap-6 sm:gap-10"
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+        variants={{
+          hidden: {},
+          visible: {
+            transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+          },
+        }}
+      >
         {users.map((user, index) => (
-          <UserCard
+          <motion.div
             key={index}
-            {...user}
-            tall={index === 1}
-            raise={index === 1}
-          />
+            className="w-full sm:w-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{
+              duration: 0.8,
+              ease: [0.33, 1, 0.68, 1],
+              delay: index * 0.15,
+            }}
+          >
+            <UserCard {...user} tall={index === 1} raise={index === 1} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };

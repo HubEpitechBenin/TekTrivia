@@ -1,6 +1,5 @@
 from tokenize import PlainToken
 
-from django.core.mail import send_mail
 from django.template.defaultfilters import default
 from django.utils.http import urlsafe_base64_encode
 from jwt.utils import force_bytes
@@ -8,12 +7,15 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import Token
 
 from TekTrivia.settings import FRONTEND_URL
-from Users.auth_views import email_verification_token
 from Users.authentication import PlayerAuthenticationBackend, AdminAuthenticationBackend
 from Users.models import Player, Admin
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password, check_password
+
+from core.services.email_service import EmailService
+from .tokens import email_verification_token
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -192,20 +194,16 @@ class PlayerRegistrationSerializer(serializers.Serializer):
         )
 
         # Generate token and uid for email verification
-        uid = urlsafe_base64_encode(force_bytes(player.id))
-        token = email_verification_token.make_token(player)
+        # uid = urlsafe_base64_encode(force_bytes(str(player.id)))
+        # token = email_verification_token.make_token(player)
 
         # Create the verification link
-        verification_link = FRONTEND_URL + f"/verify-email/{uid}/{token}/"
+        # verification_link = FRONTEND_URL + f"/verify-email/{uid}/{token}/"
 
         # Send verification email
+
+        EmailService.send_verification_email(player)
         # TODO - replace with a proper email service when available
-        send_mail(
-            subject='Email Verification',
-            message=f'Please verify your email by clicking the following link: {verification_link}',
-            from_email="noreply@tektrivia.com",
-            recipient_list=[player.email]
-        )
 
         # Return the created player instance
         return player

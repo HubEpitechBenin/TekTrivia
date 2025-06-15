@@ -1,47 +1,84 @@
 import React from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import { Star } from "lucide-react";
 
 const TestimonialsSection = () => {
   const testimonials = [
     {
       name: "Joe Traoré",
-      role: "Développeuse Full-Stack",
+      role: "Full-Stack Developer",
       content:
-        "TekTrivia m'a aidée à réviser mes connaissances avant mes entretiens. Les questions sont pertinentes et actuelles.",
+        "TekTrivia helped me review my knowledge before my interviews. The questions are relevant and up-to-date.",
       rating: 5,
     },
     {
       name: "Thomas Franklin",
-      role: "Étudiant en Informatique",
+      role: "Computer Science Student",
       content:
-        "Parfait pour tester mes connaissances de manière ludique. J'utilise TekTrivia tous les jours pour progresser.",
+        "Perfect for testing my knowledge in a fun way. I use TekTrivia every day to improve.",
       rating: 5,
     },
     {
       name: "Juhana Queen",
       role: "Lead Developer",
       content:
-        "Interface intuitive et questions de qualité. Je recommande vivement pour tous les développeurs.",
+        "Intuitive interface and high-quality questions. I highly recommend it to all developers.",
       rating: 5,
     },
   ];
 
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
+
   return (
-    <section className="py-20 bg-white-500">
+    <section className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-black-900 mb-4">
-            Ce que disent nos utilisateurs
-          </h2>
-          <p className="text-xl text-gray-600">
-            Rejoignez des milliers de développeurs qui font confiance à
-            TekTrivia
-          </p>
+          <motion.h2
+            className="text-3xl lg:text-4xl font-bold text-black mb-4"
+            initial={{ opacity: 0, y: -20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            What Our Users Say
+          </motion.h2>
+          <motion.p
+            className="text-xl text-white"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          >
+            Join thousands of developers who trust TekTrivia.
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <motion.div
+          ref={ref}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+            },
+          }}
+        >
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-gray-50 p-8 rounded-2xl">
+            <motion.div
+              key={index}
+              className="bg-gray-50 p-8 rounded-2xl shadow-md"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{
+                duration: 0.8,
+                ease: "easeOut",
+                delay: index * 0.15,
+              }}
+            >
               <div className="flex mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star
@@ -59,9 +96,9 @@ const TestimonialsSection = () => {
                 </div>
                 <div className="text-gray-600 text-sm">{testimonial.role}</div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

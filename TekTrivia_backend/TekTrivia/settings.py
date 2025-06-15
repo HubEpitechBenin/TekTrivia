@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'Quizzes.apps.QuizzesConfig',
     'Blog.apps.BlogConfig',
     'Achievements.apps.AchievementsConfig',
-    'Users.apps.UsersConfig'
+    'Users.apps.UsersConfig',
+    'core.apps.CoreConfig'
 ]
 
 MIDDLEWARE = [
@@ -99,6 +100,18 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
+
+
+# Emails
+
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@tektrivia.com')
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
