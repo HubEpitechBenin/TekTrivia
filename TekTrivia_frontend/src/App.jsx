@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PageTransition from "./components/layout/PageTransition";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
+import Dashboard from "./pages/dashboard/Dashboard";
 import Rank from "./pages/ranking/Rank";
 import Categories from "./pages/categories/Categories";
 import Blog from "./pages/blog/Blog";
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/rank" element={<Rank />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/Categories" element={<Categories />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/quizLab" element={<QuizLab />} />
