@@ -83,12 +83,14 @@ const CategoryFilter = () => {
 
   if (showEditor && quizData) {
     return (
+      <div className="w-full min-h-screen bg-white">
       <QuizEditor
         quizTitle={quizData.title}
         questions={quizData.questions}
         onBack={handleBackToHome}
         onPublish={handlePublish}
       />
+      </div>
     );
   }
 
