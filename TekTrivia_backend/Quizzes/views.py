@@ -28,13 +28,18 @@ class QuizzViewSet(viewsets.ModelViewSet):
                 {"error": "Document text is required"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        deep_ai = AIService().DeepSeekClient()
-
+        # deep_ai = AIService().DeepSeekClient()
+        # openai = AIService().OpenAIClient()
+        router_ai = AIService().OpenRouterClient()
         # Generate quiz questions using AIService
-        questions = deep_ai.generate_quiz(
+        questions = router_ai.generate_quiz(
             document_text,
             num_questions
         )
+        # questions = openai.generate_quiz(
+        #     document_text,
+        #     num_questions
+        # )
         if not questions:
             return response.Response(
                 {"error": "Failed to generate quiz questions"},
