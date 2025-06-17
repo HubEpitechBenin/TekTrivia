@@ -12,5 +12,4 @@ urlpatterns = [
     path('', include(router.urls)),
     # example endpoint for rerouting a viewset method
     # path('auth/register/player/', PlayerViewSet.as_view({'post': 'create'}), name='player_register'),
-
 ]
