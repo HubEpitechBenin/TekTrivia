@@ -27,7 +27,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
-        ordering = ['name']
+        ordering = ['my_type']
 
 class Resource(models.Model):
     id = models.AutoField(primary_key=True, unique=True, editable=False)
@@ -41,6 +41,7 @@ class Resource(models.Model):
     type = models.CharField(max_length=10, choices=RESOURCES_TYPE)
     file = models.FileField(upload_to='quiz_resources/', null=True, blank=True)
     url = models.URLField(null=True, blank=True)
+    content = models.TextField()
 
     def clean(self):
         """Validate that either file or URL is provided based on resource type"""
@@ -49,9 +50,13 @@ class Resource(models.Model):
             raise ValidationError(f"{self.get_type_display()} resources require either a file or URL")
         if self.type == 'link' and not self.url:
             raise ValidationError("Link resources require a URL")
+        if self.type == 'text' and len(self.content) == 0:
+            raise ValidationError("Text resources require a content")
+        if self.type != 'text' and self.content:
+            raise ValidationError("Only text resources can have content")
     class Meta:
         verbose_name = 'Resource'
-        verbose_plural_name = 'Resources'
+        verbose_name_plural = 'Resources'
         ordering = ['id']
 
 class Quiz(models.Model):
@@ -88,7 +93,7 @@ class Question(models.Model):
     )
     class Meta:
         verbose_name = 'Question'
-        verbose_plural_name = 'Questions'
+        verbose_name_plural = 'Questions'
         ordering = ['id']
 
 class QuizBody(models.Model):
@@ -98,7 +103,7 @@ class QuizBody(models.Model):
 
     class Meta:
         verbose_name = 'QuizBody'
-        verbose_plural_name = 'QuizBodies'
+        verbose_name_plural = 'QuizBodies'
         ordering = ['id']
 
 # Create your models here.

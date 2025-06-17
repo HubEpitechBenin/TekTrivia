@@ -24,7 +24,7 @@ class SpecialAttributes(models.Model):
     )
     class Meta:
         verbose_name = 'SpecialAttribute'
-        verbose_plural_name = 'SpecialAttributes'
+        verbose_name_plural = 'SpecialAttributes'
     
     def __str__(self):
         return self.get_code_display()
@@ -43,7 +43,7 @@ class Text(models.Model):
     special_attributes = models.ManyToManyField('SpecialAttributes', related_name='specials')
     class Meta:
         verbose_name = 'Text'
-        verbose_plural_name = 'Texts'
+        verbose_name_plural = 'Texts'
         ordering = ['id']
 
 class ImageElement(models.Model):
@@ -57,7 +57,7 @@ class ImageElement(models.Model):
 
     class Meta:
         verbose_name = 'ImageElement'
-        verbose_plural_name = 'ImageElements'
+        verbose_name_plural = 'ImageElements'
         ordering = ['id']
 
 class DesignNotification(models.Model):
@@ -67,7 +67,7 @@ class DesignNotification(models.Model):
 
     class Meta:
         verbose_name = 'DesignNotification'
-        verbose_plural_name = 'DesignNotifications'
+        verbose_name_plural = 'DesignNotifications'
 
 class Notifications(models.Model):
     id = models.AutoField(primary_key=True, unique=True, editable=False)
@@ -95,7 +95,7 @@ class Notifications(models.Model):
 
     class Meta:
         verbose_name = 'Notification'
-        verbose_plural_name = 'Notifications'
+        verbose_name_plural = 'Notifications'
         ordering = ['id']
 
 # Create your models here.

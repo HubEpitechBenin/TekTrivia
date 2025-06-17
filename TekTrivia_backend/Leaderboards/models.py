@@ -8,7 +8,7 @@ class Badges(models.Model):
 
     class Meta:
         verbose_name = 'Badge'
-        verbose_plural_name = 'Badges'
+        verbose_name_plural = 'Badges'
         ordering = ['category']
 
 # Create your models here.

@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'Blog.apps.BlogConfig',
     'Achievements.apps.AchievementsConfig',
     'Users.apps.UsersConfig',
-    'core.apps.CoreConfig'
+    'core.apps.CoreConfig',
+    'SimpleQuiz'
 ]
 
 MIDDLEWARE = [
