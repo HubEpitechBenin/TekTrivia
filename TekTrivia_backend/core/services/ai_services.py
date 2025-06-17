@@ -57,15 +57,26 @@ class AIService:
             return self.read_plain_document(file_path)
 
     @staticmethod
-    def generate_prompt(document_text:str, num_questions:int=5):
+    def generate_prompt(
+            document_text:str,
+            num_questions:int=5,
+            theme:str="general",
+            difficulty:str="medium"
+    ):
         """
         Generate a prompt for the AI model to create quiz questions based on a document.
 
         Returns:
             str: The generated prompt.
         """
+        struct = {
+            "title": "Title of the quiz",
+            ""
+
+        }
         return f"""
-        Based on the following document, create {num_questions} quiz questions.
+        Based on the following document, create {num_questions} quiz questions of {difficulty} difficulty.
+        The theme of the quiz is {theme}.
         For each question, provide:
         - The question
         - 4 multiple choice options (A, B, C, D)
@@ -75,8 +86,37 @@ class AIService:
         Document content:
         {document_text}
 
-        Format as JSON with questions array.
+        Format as JSON with questions array using the following structure:
+        
+     
+        
+        
         """
+
+
+    class OpenAIClient:
+        openai_key = os.environ.get('OPENAI_API_KEY')
+        client = OpenAI(api_key=openai_key)
+
+        def __post_init__(self):
+            if not self.openai_key:
+                raise ValueError("OPENAI_API_KEY environment variable not set")
+            if not self.client:
+                raise ValueError("OpenAI client not initialized. Check your API key.")
+
+        def generate_quiz(self, document_text:str, num_questions:int=5):
+
+            prompt = AIService.generate_prompt(document_text, num_questions)
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant professor who creates quizzes based on documents."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=2000,
+                temperature=0.7
+            )
+            return response.choices[0].message.content
 
 
     class DeepSeekClient:
@@ -88,32 +128,7 @@ class AIService:
             if not self.client:
                 raise ValueError("DeepSeek client not initialized. Check your API key.")
 
-        # def ask_deepseek(self, prompt):
-        #     """"
-        #     Ask a question to DeepSeek AI and get a response.
-        #     Args:
-        #         prompt (str): The question to ask.
-        #     Returns:
-        #         str: The response from DeepSeek AI.
-        #     """
-        #     if not self.client:
-        #         raise ValueError("DeepSeek client not initialized. Check your API key.")
-        #
-        #     response = self.client.chat.completions.create(
-        #         model="deepseek-chat",
-        #         messages=[
-        #             {"role": "system", "content": "You are a helpful assistant"},
-        #             {"role": "user", "content": prompt},
-        #       ],
-        #         max_tokens=1024,
-        #         temperature=0.7,
-        #         stream=False
-        #     )
-        #     return response.choices[0].message.content
-
-        #     print(response.choices[0].message.content)
-
-        def generate_quiz(self, document_text:str, num_questions:int=5):
+        def generate_quiz(self, document_text:str, num_questions:int=5, theme:str="general", difficulty:str="medium"):
             url = "https://api.deepseek.com/v1/chat/completions"
 
             headers = {
@@ -122,7 +137,7 @@ class AIService:
             }
 
             prompt = f"""
-            Based on the following document, create {num_questions} quiz questions.
+            Based on the following document, create {num_questions} quiz questions of {}.
             For each question, provide:
             - The question
             - 4 multiple choice options (A, B, C, D)
@@ -144,5 +159,55 @@ class AIService:
                 "temperature": 0.7
             }
 
+            response = requests.post(url, headers=headers, json=data)
+            return response.json()
+
+    class OpenRouterClient:
+        deep_key = os.environ.get('OPENROUTER_API_KEY')
+        client = OpenAI(api_key=deep_key, base_url="https://openrouter.ai/api/v1/chat/completions")
+
+        def __post_init__(self):
+            if not self.deep_key:
+                raise ValueError("DEEPSEEK_API_KEY environment variable not set")
+            if not self.client:
+                raise ValueError("DeepSeek client not initialized. Check your API key.")
+
+        def generate_quiz(self, document_text: str, num_questions: int = 5, theme: str = "general", difficulty: str = "medium"):
+            url = "https://openrouter.ai/api/v1/chat/completions"
+
+            headers = {
+                "Authorization": f"Bearer {self.deep_key}",
+                "Content-Type": "application/json"
+            }
+
+            prompt = AIService.generate_prompt(
+                document_text,
+                num_questions,
+                theme,
+                difficulty
+            )
+            prompt = f"""
+            Based on the following document, create {num_questions} quiz questions.
+            For each question, provide:
+            - The question
+            - 4 multiple choice options (A, B, C, D)
+            - The correct answer
+            - A brief explanation
+
+            Document content:
+            {document_text}
+
+            Format as JSON with questions array.
+            """
+
+            data = {
+                "model": "deepseek/deepseek-r1-0528:free",  # or "deepseek-coder" for technical docs
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                     }
+                ],
+            }
             response = requests.post(url, headers=headers, json=data)
             return response.json()
