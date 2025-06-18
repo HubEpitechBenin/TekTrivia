@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'Achievements.apps.AchievementsConfig',
     'Users.apps.UsersConfig',
     'core.apps.CoreConfig',
-    'SimpleQuiz'
+    'SimpleQuiz.apps.SimplequizConfig'
 ]
 
 MIDDLEWARE = [
