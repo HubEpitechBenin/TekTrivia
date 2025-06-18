@@ -1,11 +1,16 @@
 import json
 import re
+from pyexpat.errors import messages
 
+from django.db import transaction
 from django.shortcuts import render
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
+from rest_framework.status import HTTP_200_OK
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 
 from core.services.ai_services import AIService, save_quiz_to_database, get_quiz_with_all_data
 from .models import SCategory, SQuiz
@@ -56,27 +61,145 @@ class AnswerAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class QuizzGenerationView(APIView):
-#     def post(self, request):
-#         ai = AIService().OpenRouterClient()
-#         generated_data = ai.generate_quiz(request_data=request.data)
-#         generated_data = generated_data['choices'][0]['message']['content']
-#         json_match = re.search(r'```json\n(.*?)\n```', generated_data, re.DOTALL)
-#         quiz_json = json.loads(json_match.group(1))
-#         print(quiz_json)
-#         serializer = QuizCreateSerializer(data=generated_data)
-#         serializer.is_valid(raise_exception=True)
-#         quiz = serializer.save()
-#         return Response(QuizSerializer(quiz).data, status=status.HTTP_201_CREATED)
-# Create your views here.
+class SimpleQuizViewset(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
+    model = SQuiz
+    queryset = SQuiz.objects.all()
+    serializer_class = QuizSerializer
+
+    @action(detail=False, methods=['post'])
+    def generate(self, request, *args, **kwargs):
+        ai = AIService().OpenRouterClient()
+        generated_data = ai.generate_quiz(request_data=request.data)
+        generated_data = generated_data['choices'][0]['message']['content']
+        json_match = re.search(r'```json\n(.*?)\n```', generated_data, re.DOTALL)
+        quiz_json = json.loads(json_match.group(1))
+        with transaction.atomic():
+            quiz = SQuiz.objects.create(
+                title=quiz_json['title'],
+                difficulty=quiz_json['difficulty'],
+            )
+            quiz_body = quiz_json.get('Body')
+            if not quiz_body:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={
+                        'message': "Invalid quiz body"
+                    }
+                )
+            for Jquestion in quiz_body:
+                question = Question.objects.create(
+                    quiz=quiz,
+                    text=Jquestion['Question']
+                )
+                # TODO - Replace with an answer list in the template sent in ai_services
+                # FIXME - Before that we could use a loop to refactor this
+                A = Answer.objects.create(
+                    question=question,
+                    text=Jquestion['AnswerA']['answer'],
+                    is_correct=Jquestion['AnswerA']['is_correct']
+                )
+                B = Answer.objects.create(
+                    question=question,
+                    text=Jquestion['AnswerB']['answer'],
+                    is_correct=Jquestion['AnswerB']['is_correct']
+                )
+                C = Answer.objects.create(
+                    question=question,
+                    text=Jquestion['AnswerC']['answer'],
+                    is_correct=Jquestion['AnswerC']['is_correct']
+                )
+                D = Answer.objects.create(
+                    question=question,
+                    text=Jquestion['AnswerD']['answer'],
+                    is_correct=Jquestion['AnswerD']['is_correct']
+                )
+            # serializer = QuizSerializer(data=quiz)
+            # serializer.is_valid(raise_exception=True)
+            # quiz = serializer.save()
+        return Response(
+            data={
+                'message': f"Quiz '{quiz_json['title']}' generated successfully"
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+        quizzes = SQuiz.objects.filter(title=kwargs['pk'])
+        return Response(
+            data=QuizSerializer(quizzes, many=True).data,
+            status=HTTP_200_OK
+        )
 
 class QuizzGenerationView(APIView):
     def post(self, request):
         ai = AIService().OpenRouterClient()
-        ai = ai.generate_quiz(request_data=request.data)
-        quiz = save_quiz_to_database(ai)
-        quizz_data = get_quiz_with_all_data(quiz)
+        generated_data = ai.generate_quiz(request_data=request.data)
+        generated_data = generated_data['choices'][0]['message']['content']
+        json_match = re.search(r'```json\n(.*?)\n```', generated_data, re.DOTALL)
+        quiz_json = json.loads(json_match.group(1))
+        print(quiz_json)
+        with transaction.atomic():
+            quiz = SQuiz.objects.create(
+                title=quiz_json['title'],
+                difficulty=quiz_json['difficulty'],
+            )
+            quiz_body = quiz_json.get('Body')
+            if not quiz_body:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={
+                        'message': "Invalid quiz body"
+                    }
+                )
+            for Jquestion in quiz_body:
+                question = Question.objects.create(
+                    quiz=quiz,
+                    text=Jquestion['Question']
+                )
+                # TODO - Replace with an answer list in the template sent in ai_services
+                # FIXME - Before that we could use a loop to refactor this
+                A = Answer.objects.create(
+                    question=question,
+                    text=Jquestion['AnswerA']['answer'],
+                    is_correct=Jquestion['AnswerA']['is_correct']
+                )
+                B = Answer.objects.create(
+                    question=question,
+                    text=Jquestion['AnswerB']['answer'],
+                    is_correct=Jquestion['AnswerB']['is_correct']
+                )
+                C = Answer.objects.create(
+                    question=question,
+                    text=Jquestion['AnswerC']['answer'],
+                    is_correct=Jquestion['AnswerC']['is_correct']
+                )
+                D = Answer.objects.create(
+                    question=question,
+                    text=Jquestion['AnswerD']['answer'],
+                    is_correct=Jquestion['AnswerD']['is_correct']
+                )
+            # serializer = QuizSerializer(data=quiz)
+            # serializer.is_valid(raise_exception=True)
+            # quiz = serializer.save()
         return Response(
-            status=status.HTTP_200_OK,
-            data=quizz_data
+            data=quiz,
+            status=status.HTTP_201_CREATED
         )
+# Create your views here.
+
+# class QuizzGenerationView(APIView):
+#     def post(self, request):
+#         ai = AIService().OpenRouterClient()
+#         ai = ai.generate_quiz(request_data=request.data)
+#         quiz = save_quiz_to_database(ai)
+#         quizz_data = get_quiz_with_all_data(quiz)
+#
+#         for question in quizz_data['Body']:
+#
+#
+#
+#         return Response(
+#             status=status.HTTP_200_OK,
+#             data=quizz_data
+#         )
