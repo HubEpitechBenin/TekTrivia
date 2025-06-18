@@ -1,8 +1,10 @@
 import json
 import re
 from pyexpat.errors import messages
+from unicodedata import category
 
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import render
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -64,8 +66,28 @@ class AnswerAPIView(APIView):
 class SimpleQuizViewset(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     model = SQuiz
-    queryset = SQuiz.objects.all()
+    # queryset = SQuiz.objects.all()
     serializer_class = QuizSerializer
+
+    def get_queryset(self):
+        queryset = SQuiz.objects.all()
+
+        difficulty = self.request.query_params.get('difficulty')
+        title = self.request.query_params.get('title')
+        search = self.request.query_params.get('search')
+
+        if difficulty is not None:
+            queryset = queryset.filter(difficulty=category)
+        if title is not None:
+            queryset = queryset.filter(title__icontains=title)
+        if search is not None:
+            queryset = queryset.filter(
+                Q(title__icontains=search)
+                # Q(questions__questions__text__icontains=search) |
+                # Q(questions__answers__text__icontains=search)
+                )
+
+        return queryset
 
     @action(detail=False, methods=['post'])
     def generate(self, request, *args, **kwargs):
