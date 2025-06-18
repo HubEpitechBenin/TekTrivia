@@ -80,7 +80,7 @@ class AIService:
             
             "Body" : [
                  {
-                    "Question1": "question text",
+                    "Question": "question text",
                      "AnswerA": {
                          "answer": "answer text",
                          "is_correct":"True or False"
