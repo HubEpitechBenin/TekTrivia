@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'Quizzes.apps.QuizzesConfig',
     'Blog.apps.BlogConfig',
     'Achievements.apps.AchievementsConfig',
-    'Users.apps.UsersConfig'
+    'Users.apps.UsersConfig',
+    'core.apps.CoreConfig',
+    'SimpleQuiz.apps.SimplequizConfig'
 ]
 
 MIDDLEWARE = [
@@ -102,6 +104,18 @@ DATABASES = {
     }
 }
 
+
+# Emails
+
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@tektrivia.com')
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -131,7 +145,16 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/minute',
+        'user': '100/minute', # limit authenticated users' requests to 100 per minute
+        'login': '5/minute', # 5 login attempts per minute...too much?
+    }
 }
 
 SIMPLE_JWT = {
@@ -166,6 +189,8 @@ STATIC_URL = 'static/'
 STATIC_ROOT = "/var/www/miniblog/static/"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = "/var/www/miniblog/media/"
+
+FRONTEND_URL = env('HOST_URL', default='http://localhost:8000')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

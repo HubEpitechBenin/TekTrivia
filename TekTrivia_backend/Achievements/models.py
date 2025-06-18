@@ -22,7 +22,7 @@ class Rank (TimeStampedModel):
     name = models.CharField(max_length=255)
     description =models.TextField()
     min_xp = models.PositiveIntegerField()
-    nex_rank = models.ForeignKey(
+    next_rank = models.ForeignKey(
         'self',
         on_delete=models.DO_NOTHING,
         null=True
