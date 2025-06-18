@@ -32,7 +32,9 @@ SECRET_KEY = 'django-insecure-nkj3wvl=x_lma%u8%fkfmjx0op1ccz#58bme8%r85dmq8c2$yn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
+default_host = env('DEFAULT_HOST')
+
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default=default_host).split(',')
 
 # Application definition
 
@@ -161,6 +163,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = "/var/www/miniblog/static/"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = "/var/www/miniblog/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
