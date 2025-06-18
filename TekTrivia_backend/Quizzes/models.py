@@ -21,7 +21,7 @@ class Category(models.Model):
         max_length=10,
         choices=Type.choices
     )
-    topic = models.CharField(max_length=100, unique=True, help_text="Topic name")
+    topic = models.CharField(max_length=100, unique=True, help_text="Topic name", default="General")
     description = models.TextField(help_text="Description of the topic")
     
     class Meta:
