@@ -14,6 +14,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
+from drf_spectacular.utils import extend_schema
 
 from core.services.ai_services import AIService
 from .models import SCategory, SQuiz
@@ -25,6 +26,7 @@ from .models import Answer
 from .serializers import AnswerSerializer
 from .models import SCategory
 from .serializers import CategorySerializer
+from .serializers import QuizGenerationRequestSerializer
 
 class CategoryAPIView(APIView):
     def post(self, request):
@@ -89,7 +91,12 @@ class SimpleQuizViewset(viewsets.ModelViewSet):
                 )
 
         return queryset
-
+    
+    @extend_schema(
+        request=QuizGenerationRequestSerializer,
+        responses=QuizSerializer,
+        description="Generate a quiz on a topic using AI"
+    )
     @action(detail=False, methods=['post'])
     def generate(self, request, *args, **kwargs):
         # if 'file' in request.FILES:
@@ -175,6 +182,7 @@ class SimpleQuizViewset(viewsets.ModelViewSet):
         )
 
 class QuizzGenerationView(APIView):
+    
     def post(self, request):
         ai = AIService().OpenRouterClient()
         generated_data = ai.generate_quiz(request_data=request.data)
