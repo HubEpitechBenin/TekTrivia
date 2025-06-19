@@ -31,8 +31,13 @@ SECRET_KEY = 'django-insecure-nkj3wvl=x_lma%u8%fkfmjx0op1ccz#58bme8%r85dmq8c2$yn
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#
+# ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS = [
+    'localhost,'
+    '127.0.0.1'
+]
 
 # Application definition
 
@@ -43,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'Notifications.apps.NotificationsConfig',
     'Leaderboards.apps.LeaderboardsConfig',
     'Quizzes.apps.QuizzesConfig',
@@ -54,6 +60,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -62,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True # FIXME - reconfigurer en prod
 
 ROOT_URLCONF = 'TekTrivia.urls'
 
