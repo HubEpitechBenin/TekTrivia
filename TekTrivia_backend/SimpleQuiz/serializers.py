@@ -19,12 +19,11 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuizSerializer(serializers.ModelSerializer):
-    #category = CategorySerializer(read_only=True)
     questions = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = SQuiz
-        fields = '__all__'
+        fields = ['id', 'title', 'description', 'difficulty', 'questions']
 
 class QuizCreateSerializer(serializers.ModelSerializer):
     class Meta:
