@@ -1,0 +1,796 @@
+openapi: 3.0.3
+info:
+  title: TekTrivia API
+  version: 1.0.0
+  description: Quiz platform that stimulates learning through competition, allowing
+    users to create, share and solve quizzes while progressing through a dynamic ranking
+    system.
+paths:
+  /api/:
+    get:
+      operationId: root_retrieve
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: root_create
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/quizz/:
+    get:
+      operationId: quizz_retrieve
+      description: List all quizzes.
+      tags:
+      - quizz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: quizz_create
+      description: Create a new quiz.
+      tags:
+      - quizz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+  /api/quizz/{id}/:
+    get:
+      operationId: quizz_retrieve_2
+      description: Retrieve a specific quiz by ID.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: quizz_update
+      description: ViewSet for handling quizzes.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: quizz_partial_update
+      description: ViewSet for handling quizzes.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: quizz_destroy
+      description: ViewSet for handling quizzes.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/squiz/ai/:
+    get:
+      operationId: squiz_ai_list
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quiz'
+          description: ''
+    post:
+      operationId: squiz_ai_create
+      tags:
+      - squiz
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+  /api/squiz/ai/{id}/:
+    get:
+      operationId: squiz_ai_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this s quiz.
+        required: true
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    put:
+      operationId: squiz_ai_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this s quiz.
+        required: true
+      tags:
+      - squiz
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    patch:
+      operationId: squiz_ai_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this s quiz.
+        required: true
+      tags:
+      - squiz
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    delete:
+      operationId: squiz_ai_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this s quiz.
+        required: true
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/squiz/ai/generate/:
+    post:
+      operationId: squiz_ai_generate_create
+      tags:
+      - squiz
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+  /api/squiz/answers/:
+    post:
+      operationId: squiz_answers_create
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/squiz/categories/:
+    post:
+      operationId: squiz_categories_create
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/squiz/generate/:
+    post:
+      operationId: squiz_generate_create
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/squiz/questions/:
+    post:
+      operationId: squiz_questions_create
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/squiz/quizzes/:
+    get:
+      operationId: squiz_quizzes_retrieve
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: squiz_quizzes_create
+      tags:
+      - squiz
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/users/admin/:
+    get:
+      operationId: users_admin_retrieve
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: users_admin_create
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+  /api/users/admin/{id}/:
+    get:
+      operationId: users_admin_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: users_admin_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: users_admin_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: users_admin_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/users/auth/login-test/:
+    get:
+      operationId: users_auth_login_test_retrieve
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/auth/login/admin/:
+    post:
+      operationId: users_auth_login_admin_create
+      description: |-
+        "
+        Handles login request and returns JWT token
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/auth/login/player/:
+    post:
+      operationId: users_auth_login_player_create
+      description: Handles login request and returns JWT token
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/auth/password/reset/:
+    post:
+      operationId: users_auth_password_reset_create
+      description: Handle password reset request and send a token to the user's email.
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/auth/password/reset/confirm/{uid}/{token}/:
+    post:
+      operationId: users_auth_password_reset_confirm_create
+      description: Handle password reset confirmation and update the user's password.
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: uid
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/auth/register/admin/:
+    post:
+      operationId: users_auth_register_admin_create
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+  /api/users/auth/register/player/:
+    post:
+      operationId: users_auth_register_player_create
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+  /api/users/auth/token/refresh/:
+    post:
+      operationId: users_auth_token_refresh_create
+      description: Custom Token Refresh View to handle token refresh requests
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/users/auth/token/verify/:
+    post:
+      operationId: users_auth_token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /api/users/auth/verify-email/{uidb64}/{token}/:
+    get:
+      operationId: users_auth_verify_email_retrieve
+      description: View to handle email verification for users.
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: uidb64
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/users/player/:
+    get:
+      operationId: users_player_retrieve
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: users_player_create
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+  /api/users/player/{id}/:
+    get:
+      operationId: users_player_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: users_player_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: users_player_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: users_player_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Answer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          type: integer
+        text:
+          type: string
+          maxLength: 255
+        is_correct:
+          type: boolean
+      required:
+      - id
+      - question
+      - text
+    PatchedQuiz:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        difficulty:
+          type: string
+          maxLength: 50
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+          readOnly: true
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quiz:
+          type: integer
+        text:
+          type: string
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+          readOnly: true
+      required:
+      - answers
+      - id
+      - quiz
+      - text
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        difficulty:
+          type: string
+          maxLength: 50
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+          readOnly: true
+      required:
+      - difficulty
+      - id
+      - questions
+      - title
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
