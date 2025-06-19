@@ -4,19 +4,19 @@ from .models import SCategory, SQuiz, Question, Answer
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SCategory
-        fields = ['id', 'name']
+        fields = '__all__'
 
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ['id', 'question', 'text', 'is_correct']
+        fields = '__all__'
 
 class QuestionSerializer(serializers.ModelSerializer):
     answers = AnswerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Question
-        fields = ['id', 'quiz', 'text', 'answers']
+        fields = '__all__'
 
 class QuizSerializer(serializers.ModelSerializer):
     #category = CategorySerializer(read_only=True)
@@ -24,12 +24,12 @@ class QuizSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SQuiz
-        fields = ['id', 'title', 'difficulty', 'questions']
+        fields = '__all__'
 
 class QuizCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SQuiz
-        fields = ['id', 'title', 'difficulty']
+        fields = '__all__'
 
 class QuizGenerationRequestSerializer(serializers.Serializer):
     document_text = serializers.CharField()
