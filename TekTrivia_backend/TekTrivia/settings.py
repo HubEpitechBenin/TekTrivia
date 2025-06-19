@@ -72,6 +72,15 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True # FIXME - reconfigurer en prod
 
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
+
 ROOT_URLCONF = 'TekTrivia.urls'
 
 TEMPLATES = [
