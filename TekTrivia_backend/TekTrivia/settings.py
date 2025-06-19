@@ -40,7 +40,7 @@ default_host = env('DEFAULT_HOST')
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', default=default_host).split(',')
 =======
 ALLOWED_HOSTS = [
-    'localhost,'
+    'localhost',
     '127.0.0.1'
 ]
 >>>>>>> 2c21b06a66484baff0bd208c4fe85ccd66c3c337
