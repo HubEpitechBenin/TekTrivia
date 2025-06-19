@@ -35,7 +35,7 @@ DEBUG = True
 # ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
 ALLOWED_HOSTS = [
-    'localhost,'
+    'localhost',
     '127.0.0.1'
 ]
 
