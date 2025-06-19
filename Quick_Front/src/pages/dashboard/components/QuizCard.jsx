@@ -1,17 +1,29 @@
 import { Play } from 'lucide-react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
-const QuizCard = ({ color, title, description, questions, plays }) => {
+const QuizCard = ({ color, title, description, num_questions, questions, plays }) => {
+  const navigate = useNavigate();
+
+  const handlePlay = () => {
+    navigate('/quiz-lab', {
+      state: { questions, title },
+    });
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer w-80 h-auto">
       {/* Top colored section */}
       <div className={`${color} rounded-b-[40px] h-32 relative flex items-center justify-center p-4`}>
-        {/* Play button - positioned absolutely in top right */}
+        {/* Play button */}
         <div className="absolute top-3 right-3 z-10">
-          <div className="bg-white rounded-full px-3 py-1 flex items-center space-x-1 shadow-sm">
-            <div className="w-0 h-0 border-l-[6px] border-l-blue-500 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent"></div>
+          <button
+            onClick={handlePlay}
+            className="bg-white rounded-full px-3 py-1 flex items-center space-x-1 shadow-sm hover:shadow-md"
+          >
+            <Play size={14} className="text-blue-500" />
             <span className="text-blue-500 text-sm font-medium">Play</span>
-          </div>
+          </button>
         </div>
         
         {/* Title - centered */}
@@ -23,7 +35,7 @@ const QuizCard = ({ color, title, description, questions, plays }) => {
         {/* Stats badges - centered with proper spacing */}
         <div className="flex items-center justify-center space-x-4 mb-3">
           <div className="bg-gray-100 rounded-full px-3 py-1">
-            <span className="text-gray-700 text-sm font-medium">{questions} Qs</span>
+            <span className="text-gray-700 text-sm font-medium">{num_questions} Qs</span>
           </div>
           <div className="bg-gray-100 rounded-full px-3 py-1">
             <span className="text-gray-700 text-sm font-medium">{plays} Plays</span>

@@ -1,11 +1,319 @@
+// import React, { useState } from 'react';
+// import { X, FileText, Globe, Upload, ChevronDown, Plus, Minus } from 'lucide-react';
+
+// const CreateQuizModal = ({ isOpen, onClose, onGenerate }) => {
+//   const [selectedMethod, setSelectedMethod] = useState('text');
+//   const [topic, setTopic] = useState('');
+//   const [documentFile, setDocumentFile] = useState(null);
+//   const [difficulty, setDifficulty] = useState('beginner');
+//   const [quizType, setQuizType] = useState('');
+//   const [category, setCategory] = useState('');
+//   const [questionCount, setQuestionCount] = useState(1);
+//   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+//   const [isGenerating, setIsGenerating] = useState(false);
+
+//   const generationMethods = [
+//     {
+//       id: 'text',
+//       title: 'Generate from text',
+//       description: 'Use AI to generate quiz questions and content based on textual input',
+//       icon: FileText
+//     },
+//     {
+//       id: 'url',
+//       title: 'Convert URL To Quiz',
+//       description: 'Use AI to automatically convert content from a given URL into quiz questions',
+//       icon: Globe
+//     },
+//     {
+//       id: 'document',
+//       title: 'Upload a document',
+//       description: 'Upload a PDF or Word that contains educational content for AI to generate',
+//       icon: Upload
+//     }
+//   ];
+
+//   const quizTypes = [
+//     'Multiple Choice',
+//     'True/False',
+//     'Short Answer',
+//     'Fill in the Blank',
+//     'Matching',
+//     'Essay Questions'
+//   ];
+
+//   const difficultyLevels = [
+//     { id: 'beginner', label: 'Beginner' },
+//     { id: 'intermediate', label: 'Intermediate' },
+//     { id: 'expert', label: 'Expert' }
+//   ];
+
+//   const getTopicConfig = () => {
+//     switch (selectedMethod) {
+//       case 'text':
+//         return { label: 'Topic', placeholder: 'Enter your topic...', inputType: 'textarea' };
+//       case 'url':
+//         return { label: 'URL', placeholder: 'https://example.com/article', inputType: 'input' };
+//       case 'document':
+//         return { label: 'Document', placeholder: 'Click to upload a document', inputType: 'file' };
+//       default:
+//         return { label: 'Topic', placeholder: 'Enter your topic', inputType: 'input' };
+//     }
+//   };
+
+//   const topicConfig = getTopicConfig();
+
+//   const handleMethodChange = (method) => {
+//     setSelectedMethod(method);
+//     setTopic('');
+//     setDocumentFile(null);
+//   };
+
+//   const handleCountChange = (delta) => {
+//     setQuestionCount((prev) => Math.max(1, Math.min(50, prev + delta)));
+//   };
+
+//   const handleGenerate = async () => {
+//     if ((!topic && selectedMethod !== 'document') || !quizType) return;
+//     setIsGenerating(true);
+
+//     try {
+//       let response;
+
+//       if (selectedMethod === 'document') {
+//         if (!documentFile) {
+//           alert('Please upload a document.');
+//           return;
+//         }
+
+//         const formData = new FormData();
+//         formData.append('document_text', documentFile);
+//         formData.append('difficulty', difficulty);
+//         formData.append('num_questions', questionCount);
+//         formData.append('theme', category);
+
+//         for (let pair of formData.entries()) {
+//           console.log(`${pair[0]}:`, pair[1]);
+//         }
+
+//         response = await fetch('/api/api/squiz/ai/generate/', {
+//           method: 'POST',
+//           body: formData,
+//         });
+//       } else {
+//         const genpayload = {
+//           document_text: topic.trim(),
+//           difficulty,
+//           num_questions: questionCount,
+//           theme: category
+//         };
+
+//         response = await fetch('/api/api/squiz/ai/generate/', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify(genpayload),
+//         });
+//       }
+
+//       if (!response.ok) throw new Error('Erreur lors de la génération du quiz');
+
+//       const result = await response.json();
+//       onGenerate(result);
+//       onClose();
+//     } catch (error) {
+//       console.error('❌ Erreur API :', error);
+//       alert('Une erreur est survenue pendant la génération du quiz.');
+//     } finally {
+//       setIsGenerating(false);
+//     }
+//   };
+
+//   if (!isOpen) return null;
+
+//   return (
+//     <div className="fixed inset-0 z-50 flex items-center justify-center">
+//       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+//       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
+//         <div className="flex items-center justify-between p-6 border-b">
+//           <h2 className="text-xl font-semibold">Create with AI</h2>
+//           <button onClick={onClose} className="text-gray-500 hover:text-black">
+//             <X />
+//           </button>
+//         </div>
+
+//         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+//             <div className="space-y-4">
+//               {generationMethods.map((method) => {
+//                 const Icon = method.icon;
+//                 const selected = method.id === selectedMethod;
+//                 return (
+//                   <button
+//                     key={method.id}
+//                     onClick={() => handleMethodChange(method.id)}
+//                     className={`w-full text-left border-2 rounded-xl p-4 transition ${
+//                       selected ? 'border-purple-400 bg-purple-50' : 'border-gray-200 hover:border-purple-200'
+//                     }`}
+//                   >
+//                     <div className="flex items-start gap-3">
+//                       <div className="bg-purple-100 p-2 rounded">
+//                         <Icon className="w-5 h-5 text-purple-600" />
+//                       </div>
+//                       <div>
+//                         <h3 className="font-medium">{method.title}</h3>
+//                         <p className="text-sm text-gray-500">{method.description}</p>
+//                       </div>
+//                     </div>
+//                   </button>
+//                 );
+//               })}
+//             </div>
+
+//             <div className="space-y-6">
+//               <div>
+//                 <label className="block text-sm font-medium mb-2">{topicConfig.label}</label>
+//                 {topicConfig.inputType === 'textarea' ? (
+//                   <textarea
+//                     rows={4}
+//                     value={topic}
+//                     onChange={(e) => setTopic(e.target.value)}
+//                     placeholder={topicConfig.placeholder}
+//                     className="w-full border rounded-lg p-3"
+//                   />
+//                 ) : topicConfig.inputType === 'file' ? (
+//                   <div className="relative border-2 border-dashed p-4 text-center cursor-pointer rounded-lg">
+//                     <input
+//                       type="file"
+//                       className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+//                       accept=".pdf,.doc,.docx"
+//                       onChange={(e) => {
+//                         const file = e.target.files?.[0];
+//                         if (file) {
+//                           setTopic(file.name);
+//                           setDocumentFile(file);
+//                         }
+//                       }}
+//                     />
+//                     <Upload className="mx-auto text-gray-500" />
+//                     <p className="mt-2">{topic || topicConfig.placeholder}</p>
+//                   </div>
+//                 ) : (
+//                   <input
+//                     type="url"
+//                     value={topic}
+//                     onChange={(e) => setTopic(e.target.value)}
+//                     placeholder={topicConfig.placeholder}
+//                     className="w-full border rounded-lg p-3"
+//                   />
+//                 )}
+//               </div>
+
+//               <div>
+//                 <label className="block text-sm font-medium mb-2">Difficulty</label>
+//                 <div className="flex gap-2">
+//                   {difficultyLevels.map((level) => (
+//                     <button
+//                       key={level.id}
+//                       onClick={() => setDifficulty(level.id)}
+//                       className={`px-4 py-2 rounded-lg border-2 ${
+//                         difficulty === level.id
+//                           ? 'border-purple-400 bg-purple-50'
+//                           : 'border-gray-200 hover:border-gray-300'
+//                       }`}
+//                     >
+//                       {level.label}
+//                     </button>
+//                   ))}
+//                 </div>
+//               </div>
+
+//               <div>
+//                 <label className="block text-sm font-medium mb-2">Quiz Type</label>
+//                 <div className="flex gap-4 items-center">
+//                   <div className="relative flex-1">
+//                     <button
+//                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+//                       className="w-full border rounded-lg p-3 text-left flex justify-between"
+//                     >
+//                       {quizType || 'Select type'}
+//                       <ChevronDown className="text-gray-500" />
+//                     </button>
+//                     {isDropdownOpen && (
+//                       <div className="absolute z-10 bg-white border w-full mt-1 rounded-lg shadow-lg">
+//                         {quizTypes.map((type) => (
+//                           <div
+//                             key={type}
+//                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+//                             onClick={() => {
+//                               setQuizType(type);
+//                               setIsDropdownOpen(false);
+//                             }}
+//                           >
+//                             {type}
+//                           </div>
+//                         ))}
+//                       </div>
+//                     )}
+//                   </div>
+//                   <div className="flex items-center border rounded-lg">
+//                     <button onClick={() => handleCountChange(-1)} className="px-2 py-2 hover:bg-gray-100">
+//                       <Minus />
+//                     </button>
+//                     <span className="px-4">{questionCount}</span>
+//                     <button onClick={() => handleCountChange(1)} className="px-2 py-2 hover:bg-gray-100">
+//                       <Plus />
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Category input */}
+//               <div>
+//                 <label className="block text-sm font-medium mb-2">Category</label>
+//                 <input
+//                   type="text"
+//                   value={category}
+//                   onChange={(e) => setCategory(e.target.value)}
+//                   placeholder="e.g. Math, Science, Literature"
+//                   className="w-full border rounded-lg p-3"
+//                 />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className="flex justify-end gap-3 p-6 border-t">
+//           <button onClick={onClose} className="text-gray-600 hover:text-black">
+//             Cancel
+//           </button>
+//           <button
+//             onClick={handleGenerate}
+//             disabled={(selectedMethod !== 'document' && !topic.trim()) || !quizType || isGenerating}
+//             className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50"
+//           >
+//             {isGenerating ? 'Generating...' : 'Generate'}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CreateQuizModal;
+
 import React, { useState } from 'react';
 import { X, FileText, Globe, Upload, ChevronDown, Plus, Minus } from 'lucide-react';
+import * as pdfjsLib from 'pdfjs-dist';
+import mammoth from 'mammoth';
+import pdfToText from 'react-pdftotext';
 
 const CreateQuizModal = ({ isOpen, onClose, onGenerate }) => {
   const [selectedMethod, setSelectedMethod] = useState('text');
   const [topic, setTopic] = useState('');
-  const [difficulty, setDifficulty] = useState('beginner');
+  const [documentFile, setDocumentFile] = useState(null);
+  const [difficulty, setDifficulty] = useState('easy');
   const [quizType, setQuizType] = useState('');
+  const [category, setCategory] = useState('');
   const [questionCount, setQuestionCount] = useState(1);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -15,28 +323,19 @@ const CreateQuizModal = ({ isOpen, onClose, onGenerate }) => {
       id: 'text',
       title: 'Generate from text',
       description: 'Use AI to generate quiz questions and content based on textual input',
-      icon: FileText,
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-      hoverBg: 'hover:bg-blue-100'
+      icon: FileText
     },
     {
       id: 'url',
       title: 'Convert URL To Quiz',
       description: 'Use AI to automatically convert content from a given URL into quiz questions',
-      icon: Globe,
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-      hoverBg: 'hover:bg-blue-100'
+      icon: Globe
     },
     {
       id: 'document',
       title: 'Upload a document',
       description: 'Upload a PDF or Word that contains educational content for AI to generate',
-      icon: Upload,
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-      hoverBg: 'hover:bg-blue-100'
+      icon: Upload
     }
   ];
 
@@ -50,37 +349,21 @@ const CreateQuizModal = ({ isOpen, onClose, onGenerate }) => {
   ];
 
   const difficultyLevels = [
-    { id: 'beginner', label: 'Beginner' },
-    { id: 'intermediate', label: 'Intermediate' },
-    { id: 'expert', label: 'Expert' }
+    { id: 'easy', label: 'Beginner' },
+    { id: 'medium', label: 'Intermediate' },
+    { id: 'hard', label: 'Expert' }
   ];
 
   const getTopicConfig = () => {
     switch (selectedMethod) {
       case 'text':
-        return {
-          label: 'Topic',
-          placeholder: 'Enter your topic or paste text content here...',
-          inputType: 'textarea'
-        };
+        return { label: 'Topic', placeholder: 'Enter your topic...', inputType: 'textarea' };
       case 'url':
-        return {
-          label: 'URL',
-          placeholder: 'https://example.com/article-to-convert',
-          inputType: 'input'
-        };
+        return { label: 'URL', placeholder: 'https://example.com/article', inputType: 'input' };
       case 'document':
-        return {
-          label: 'Document',
-          placeholder: 'Click to upload PDF or Word document',
-          inputType: 'file'
-        };
+        return { label: 'Document', placeholder: 'Click to upload a document', inputType: 'file' };
       default:
-        return {
-          label: 'Topic',
-          placeholder: 'Fill Topic Question',
-          inputType: 'input'
-        };
+        return { label: 'Topic', placeholder: 'Enter your topic', inputType: 'input' };
     }
   };
 
@@ -89,91 +372,131 @@ const CreateQuizModal = ({ isOpen, onClose, onGenerate }) => {
   const handleMethodChange = (method) => {
     setSelectedMethod(method);
     setTopic('');
-  };
-
-  const handleGenerate = () => {
-    if (!topic.trim() || !quizType) return;
-
-    setIsGenerating(true);
-
-    const data = {
-      method: selectedMethod,
-      topic: topic.trim(),
-      difficulty,
-      quizType,
-      questionCount
-    };
-
-    setTimeout(() => {
-      onGenerate(data);
-      setIsGenerating(false);
-      onClose();
-    }, 2000);
+    setDocumentFile(null);
   };
 
   const handleCountChange = (delta) => {
-    setQuestionCount(Math.max(1, Math.min(50, questionCount + delta)));
+    setQuestionCount((prev) => Math.max(1, Math.min(50, prev + delta)));
+  };
+
+  const extractTextFromPDF = async (file) => {
+    try {
+      const text = await pdfToText(file);
+      return text;
+    } catch (error) {
+      console.error('Failed to extract text from pdf:', error);
+      return '';
+    }
+  };
+
+  const extractTextFromDocx = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer });
+    return result.value;
+  };
+
+  const extractTextFromFile = async (file) => {
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (ext === 'pdf') {
+      return await extractTextFromPDF(file);
+    } else if (ext === 'docx') {
+      return await extractTextFromDocx(file);
+    } else if (ext === 'txt') {
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsText(file);
+      });
+    } else {
+      throw new Error('Unsupported file type');
+    }
+  };
+
+
+  const handleGenerate = async () => {
+    if ((!topic && selectedMethod !== 'document') || !quizType) return;
+    setIsGenerating(true);
+
+    try {
+      let documentText = topic;
+
+      if (selectedMethod === 'document') {
+        if (!documentFile) {
+          alert('Please upload a document.');
+          return;
+        }
+        documentText = await extractTextFromFile(documentFile);
+        console.log(documentText);
+        if (!documentText.trim()) {
+          alert('Failed to extract text from the document.');
+          return;
+        }
+      }
+
+      const payload = {
+        document_text: documentText.trim(),
+        num_questions: questionCount,
+        theme: category,
+        difficulty
+      };
+
+      console.log(JSON.stringify(payload));
+
+      const response = await fetch('/api/squiz/ai/generate/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error('Erreur lors de la génération du quiz');
+
+      const result = await response.json();
+      console.log(result);
+      onGenerate(result);
+      onClose();
+    } catch (error) {
+      console.error('❌ Erreur API :', error);
+      alert('Une erreur est survenue pendant la génération du quiz.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-300">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-4 h-4 text-purple-600" />
-            </div>
-            <h2 className="text-xl font-semibold text-gray-900">Create with AI</h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-500" />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
+        <div className="flex items-center justify-between p-6 border-b">
+          <h2 className="text-xl font-semibold">Create with AI</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-black">
+            <X />
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-4">
               {generationMethods.map((method) => {
                 const Icon = method.icon;
-                const isSelected = selectedMethod === method.id;
-
+                const selected = method.id === selectedMethod;
                 return (
                   <button
                     key={method.id}
                     onClick={() => handleMethodChange(method.id)}
-                    className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 ${
-                      isSelected
-                        ? 'border-purple-200 bg-purple-50 ring-2 ring-purple-100'
-                        : `${method.borderColor} ${method.bgColor} ${method.hoverBg}`
+                    className={`w-full text-left border-2 rounded-xl p-4 transition ${
+                      selected ? 'border-purple-400 bg-purple-50' : 'border-gray-200 hover:border-purple-200'
                     }`}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        isSelected ? 'bg-purple-100' : 'bg-white'
-                      }`}>
-                        <Icon className={`w-5 h-5 ${
-                          isSelected ? 'text-purple-600' : 'text-gray-600'
-                        }`} />
+                      <div className="bg-purple-100 p-2 rounded">
+                        <Icon className="w-5 h-5 text-purple-600" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className={`font-medium mb-1 ${
-                          isSelected ? 'text-purple-900' : 'text-gray-900'
-                        }`}>
-                          {method.title}
-                        </h3>
-                        <p className={`text-sm ${
-                          isSelected ? 'text-purple-700' : 'text-gray-600'
-                        }`}>
-                          {method.description}
-                        </p>
+                      <div>
+                        <h3 className="font-medium">{method.title}</h3>
+                        <p className="text-sm text-gray-500">{method.description}</p>
                       </div>
                     </div>
                   </button>
@@ -181,66 +504,56 @@ const CreateQuizModal = ({ isOpen, onClose, onGenerate }) => {
               })}
             </div>
 
-            {/* Right column */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">What kind of question do you want?</h3>
-                <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-2">
-                  {topicConfig.label}
-                </label>
+                <label className="block text-sm font-medium mb-2">{topicConfig.label}</label>
                 {topicConfig.inputType === 'textarea' ? (
                   <textarea
-                    id="topic"
+                    rows={4}
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder={topicConfig.placeholder}
-                    rows={4}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-100 focus:border-purple-300 transition-colors outline-none resize-none"
+                    className="w-full border rounded-lg p-3"
                   />
                 ) : topicConfig.inputType === 'file' ? (
-                  <div className="relative">
+                  <div className="relative border-2 border-dashed p-4 text-center cursor-pointer rounded-lg">
                     <input
-                      id="topic"
                       type="file"
+                      className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                       accept=".pdf,.doc,.docx"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
                           setTopic(file.name);
+                          setDocumentFile(file);
                         }
                       }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     />
-                    <div className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-300 transition-colors cursor-pointer bg-gray-50 hover:bg-purple-50">
-                      <div className="flex items-center justify-center gap-2 text-gray-600">
-                        <Upload className="w-5 h-5" />
-                        <span>{topic || topicConfig.placeholder}</span>
-                      </div>
-                    </div>
+                    <Upload className="mx-auto text-gray-500" />
+                    <p className="mt-2">{topic || topicConfig.placeholder}</p>
                   </div>
                 ) : (
                   <input
-                    id="topic"
                     type="url"
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder={topicConfig.placeholder}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-100 focus:border-purple-300 transition-colors outline-none"
+                    className="w-full border rounded-lg p-3"
                   />
                 )}
               </div>
 
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Difficulty Level</h4>
+                <label className="block text-sm font-medium mb-2">Difficulty</label>
                 <div className="flex gap-2">
                   {difficultyLevels.map((level) => (
                     <button
                       key={level.id}
                       onClick={() => setDifficulty(level.id)}
-                      className={`px-4 py-2 rounded-lg border-2 transition-all duration-200 ${
+                      className={`px-4 py-2 rounded-lg border-2 ${
                         difficulty === level.id
-                          ? 'border-purple-200 bg-purple-50 text-purple-700'
-                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                          ? 'border-purple-400 bg-purple-50'
+                          : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
                       {level.label}
@@ -250,85 +563,70 @@ const CreateQuizModal = ({ isOpen, onClose, onGenerate }) => {
               </div>
 
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Quiz type</h4>
-                <p className="text-sm text-gray-500 mb-3">Quiz type and amount of question</p>
-
-                <div className="flex gap-3">
-                  <div className="flex-1 relative">
+                <label className="block text-sm font-medium mb-2">Quiz Type</label>
+                <div className="flex gap-4 items-center">
+                  <div className="relative flex-1">
                     <button
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-white text-left flex items-center justify-between hover:border-gray-300 transition-colors"
+                      className="w-full border rounded-lg p-3 text-left flex justify-between"
                     >
-                      <span className={quizType ? 'text-gray-900' : 'text-gray-500'}>
-                        {quizType || 'Select quiz type'}
-                      </span>
-                      <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${
-                        isDropdownOpen ? 'rotate-180' : ''
-                      }`} />
+                      {quizType || 'Select type'}
+                      <ChevronDown className="text-gray-500" />
                     </button>
-
                     {isDropdownOpen && (
-                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+                      <div className="absolute z-10 bg-white border w-full mt-1 rounded-lg shadow-lg">
                         {quizTypes.map((type) => (
-                          <button
+                          <div
                             key={type}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                             onClick={() => {
                               setQuizType(type);
                               setIsDropdownOpen(false);
                             }}
-                            className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors"
                           >
                             {type}
-                          </button>
+                          </div>
                         ))}
                       </div>
                     )}
                   </div>
-
-                  <div className="flex items-center border border-gray-200 rounded-lg bg-white">
-                    <button
-                      onClick={() => handleCountChange(-1)}
-                      className="w-10 h-12 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    >
-                      <Minus className="w-4 h-4 text-gray-600" />
+                  <div className="flex items-center border rounded-lg">
+                    <button onClick={() => handleCountChange(-1)} className="px-2 py-2 hover:bg-gray-100">
+                      <Minus />
                     </button>
-                    <div className="w-16 h-12 flex items-center justify-center border-x border-gray-200">
-                      <span className="font-medium text-gray-900">{questionCount}</span>
-                    </div>
-                    <button
-                      onClick={() => handleCountChange(1)}
-                      className="w-10 h-12 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    >
-                      <Plus className="w-4 h-4 text-gray-600" />
+                    <span className="px-4">{questionCount}</span>
+                    <button onClick={() => handleCountChange(1)} className="px-2 py-2 hover:bg-gray-100">
+                      <Plus />
                     </button>
                   </div>
                 </div>
+              </div>
+
+              {/* Category input */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Category</label>
+                <input
+                  type="text"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  placeholder="e.g. Math, Science, Literature"
+                  className="w-full border rounded-lg p-3"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-100 bg-gray-50">
-          <button
-            onClick={onClose}
-            className="px-6 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-white transition-colors"
-          >
+        <div className="flex justify-end gap-3 p-6 border-t">
+          <button onClick={onClose} className="text-gray-600 hover:text-black">
             Cancel
           </button>
           <button
             onClick={handleGenerate}
-            disabled={!topic.trim() || !quizType || isGenerating}
-            className="px-6 py-2.5 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            disabled={(selectedMethod !== 'document' && !topic.trim()) || !quizType || isGenerating}
+            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50"
           >
-            {isGenerating ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Generating...
-              </>
-            ) : (
-              'Generate'
-            )}
+            {isGenerating ? 'Generating...' : 'Generate'}
           </button>
         </div>
       </div>
@@ -337,3 +635,5 @@ const CreateQuizModal = ({ isOpen, onClose, onGenerate }) => {
 };
 
 export default CreateQuizModal;
+
+
