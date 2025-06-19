@@ -1,0 +1,45 @@
+import requests
+import json
+import PyPDF2
+import json
+import re
+
+from rest_framework.request import Request
+
+
+class DocumentService:
+    """
+    A service that handles all tasks related to the acquisition of documents from the request body
+    """
+
+    def receive_document(self, request:Request):
+        if request is None:
+            raise ValueError("Invalid request")
+        if 'document_text' in request.data:
+            return self.received_text_from_request(request['document_text'])
+        if request.FILES:
+            if 'document_file' in request.FILES:
+                return self.received_file_from_request(request.FILES['document_file'])
+        if 'document_url' in request.data:
+            return self.received_url_from_request(request.data['document_url'])
+
+
+        raise ValueError("Invalid request. No option matches the expected document formats.")
+
+    @staticmethod
+    def received_text_from_request(text:str):
+        """"
+        Receive text directly from the request. No work required
+        """
+        if text is None:
+            raise ValueError("Invalid request. No document text provided.")
+        return text
+
+    def received_file_from_request(self, file):
+
+        pass
+
+    def received_url_from_request(self, url):
+        pass
+
+
