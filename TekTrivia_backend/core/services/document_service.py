@@ -36,10 +36,22 @@ class DocumentService:
         return text
 
     def received_file_from_request(self, file):
+        """
+        Receive a file from request. Must convert it into a string depending on its type
+
+        :param file:
+
+        :return str
+        """
 
         pass
 
     def received_url_from_request(self, url):
+        """
+        Receive an url from request. Must acquire text from it.
+        :param url:
+        :return: str
+        """
         pass
 
 
