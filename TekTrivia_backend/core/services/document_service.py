@@ -12,16 +12,16 @@ class DocumentService:
     A service that handles all tasks related to the acquisition of documents from the request body
     """
 
-    def receive_document(self, request:Request):
-        if request is None:
+    def receive_document(self, body, files):
+        if body is None:
             raise ValueError("Invalid request")
-        if 'document_text' in request.data:
-            return self.received_text_from_request(request['document_text'])
-        if request.FILES:
-            if 'document_file' in request.FILES:
-                return self.received_file_from_request(request.FILES['document_file'])
-        if 'document_url' in request.data:
-            return self.received_url_from_request(request.data['document_url'])
+        if 'document_text' in body:
+            return self.received_text_from_request(body['document_text'])
+        if files:
+            if 'document_file' in files:
+                return self.received_file_from_request(files['document_file'])
+        if 'document_url' in body:
+            return self.received_url_from_request(body['document_url'])
 
 
         raise ValueError("Invalid request. No option matches the expected document formats.")
@@ -36,10 +36,22 @@ class DocumentService:
         return text
 
     def received_file_from_request(self, file):
+        """
+        Receive a file from request. Must convert it into a string depending on its type
+
+        :param file:
+
+        :return str
+        """
 
         pass
 
     def received_url_from_request(self, url):
+        """
+        Receive an url from request. Must acquire text from it.
+        :param url:
+        :return: str
+        """
         pass
 
 
