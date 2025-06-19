@@ -30,3 +30,9 @@ class QuizCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SQuiz
         fields = ['id', 'title', 'difficulty']
+
+class QuizGenerationRequestSerializer(serializers.Serializer):
+    document_text = serializers.CharField()
+    num_questions = serializers.IntegerField(min_value=1)
+    difficulty = serializers.ChoiceField(choices=["Easy", "Medium", "Hard"])
+    theme = serializers.CharField()

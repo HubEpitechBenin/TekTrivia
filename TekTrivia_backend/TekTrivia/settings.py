@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'Achievements.apps.AchievementsConfig',
     'Users.apps.UsersConfig',
     'core.apps.CoreConfig',
-    'SimpleQuiz.apps.SimplequizConfig'
+    'SimpleQuiz.apps.SimplequizConfig',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -161,7 +162,16 @@ REST_FRAMEWORK = {
         'anon': '10/minute',
         'user': '100/minute', # limit authenticated users' requests to 100 per minute
         'login': '5/minute', # 5 login attempts per minute...too much?
-    }
+    },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'TekTrivia API',
+    'DESCRIPTION': 'Quiz platform that stimulates learning through competition, allowing users to create, share and solve quizzes while progressing through a dynamic ranking system.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
 
 SIMPLE_JWT = {

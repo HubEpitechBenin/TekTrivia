@@ -8,8 +8,7 @@ class SCategory(models.Model):
 
 class SQuiz(models.Model):
     title = models.CharField(max_length=200)
-    # category = models.ForeignKey(SCategory, on_delete=models.CASCADE)
-    difficulty = models.CharField(max_length=50)
+    difficulty = models.CharField(max_length=50, default='Easy')
 
     def __str__(self):
         return self.title
