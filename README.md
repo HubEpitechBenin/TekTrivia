@@ -143,6 +143,7 @@ python manage.py runserver 0.0.0.0:8080
 
 ### 💻 Frontend Setup
 
+```bash
 cd Quick_Front
 
 # Install dependencies
@@ -150,10 +151,10 @@ npm install
 
 # Start Vite dev server
 npm run dev
+```
 
 Frontend will be available at: http://localhost:5173
 
-### 👤 Project Owners & Roles
 
 ## 👤 Project Owners & Roles
 
