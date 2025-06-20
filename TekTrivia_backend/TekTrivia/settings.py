@@ -34,10 +34,9 @@ DEBUG = True
 #
 # ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1'
-]
+default_host = env('DEFAULT_HOST')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default=default_host).split(',')
+
 
 # Application definition
 
@@ -72,6 +71,15 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True # FIXME - reconfigurer en prod
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
 
 ROOT_URLCONF = 'TekTrivia.urls'
 
@@ -203,6 +211,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = "/var/www/miniblog/static/"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = "/var/www/miniblog/media/"
 
 FRONTEND_URL = env('HOST_URL', default='http://localhost:8000')
 
