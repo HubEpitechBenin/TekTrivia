@@ -30,6 +30,7 @@ TekTrivia is a dynamic quiz platform that promotes **active learning through com
     - [🔹 Developpers Page](#-developpers-page)
     - [🔹 Create Quiz With AI](#-create-quiz-with-ai)
     - [🔹 Edit Quiz](#-edit-quiz)
+    - [🔹 Quiz Game Play](#-quiz-game-play)
     - [🔹 Leaderboards](#-leaderboards)
   - [📃 License](#-license)
 
@@ -174,13 +175,16 @@ Live demo screenshots will help users visualize the product.
 ![Create Quiz With AI](/screenshots/dashboard.png)
 
 ### 🔹 Developpers Page
-![Create Quiz With AI](/screenshots/dashboard.png) 
+![Create Quiz With AI](/screenshots/developpers.png) 
 
 ### 🔹 Create Quiz With AI
 ![Create Quiz With AI](/screenshots/create_with_ai.png)
 
 ### 🔹 Edit Quiz
 ![Edit Quiz](/screenshots/edit_quiz.png)
+
+### 🔹 Quiz Game Play
+![Edit Quiz](/screenshots/quiz_game.png)
 
 ### 🔹 Leaderboards
 ![Leaderboards](/screenshots/leaderboards.png)
