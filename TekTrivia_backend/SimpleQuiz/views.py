@@ -189,6 +189,26 @@ class SimpleQuizViewset(viewsets.ModelViewSet):
             status=HTTP_200_OK
         )
 
+    def update(self, request, *args, **kwargs):
+        squiz = self.get_object()
+        with transaction.atomic():
+            serializer = QuizSerializer(squiz, data=request.data, partial=True)
+
+            if 'question_id' and 'question_text' in request.data:
+                for question_id in request.data['question_id']:
+                    question = Question.objects.get(id=question_id)
+                    question.text = request.data['question_text'][str(question_id)]
+                    question.save()
+            if 'answer_id' and 'answer_text' in request.data:
+                for answer_id in request.data['answer_id']:
+                    answer = Answer.objects.get(id=answer_id)
+                    answer.text = request.data['answer_text'][str(answer_id)]
+                    answer.save()
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class QuizzGenerationView(APIView):
     
     def post(self, request):
