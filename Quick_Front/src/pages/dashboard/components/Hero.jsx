@@ -29,7 +29,7 @@ const Hero = () => {
           <ArrowRight size={20} />
         </button>
         <button 
-          onClick={() => navigate('/deveppers')}
+          onClick={() => navigate('/developper')}
           className="bg-blue-400 hover:bg-blue-600 text-white px-6 py-3 rounded-3xl font-semibold flex items-center space-x-2 transition-colors">
           <span>Developpers</span>
           <ArrowRight size={20} />

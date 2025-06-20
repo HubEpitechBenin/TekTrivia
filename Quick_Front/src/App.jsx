@@ -6,6 +6,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Rank from "./pages/ranking/Rank";
 import NotFound from "./pages/NotFound";
 import QuizLab from "./pages/quizLab/QuizLab";
+import Developper from "./pages/developper/Developper";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/rank" element={<Rank />} />
             <Route path="/quiz-lab" element={<QuizLab />} />
+            <Route path="/developper" element={<Developper />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </PageTransition>
