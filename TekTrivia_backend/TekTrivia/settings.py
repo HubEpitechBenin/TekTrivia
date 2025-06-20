@@ -31,8 +31,12 @@ SECRET_KEY = 'django-insecure-nkj3wvl=x_lma%u8%fkfmjx0op1ccz#58bme8%r85dmq8c2$yn
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#
+# ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
+default_host = env('DEFAULT_HOST')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default=default_host).split(',')
+
 
 # Application definition
 
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'Notifications.apps.NotificationsConfig',
     'Leaderboards.apps.LeaderboardsConfig',
     'Quizzes.apps.QuizzesConfig',
@@ -50,10 +55,12 @@ INSTALLED_APPS = [
     'Achievements.apps.AchievementsConfig',
     'Users.apps.UsersConfig',
     'core.apps.CoreConfig',
-    'SimpleQuiz.apps.SimplequizConfig'
+    'SimpleQuiz.apps.SimplequizConfig',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -61,6 +68,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOW_ALL_ORIGINS = True # FIXME - reconfigurer en prod
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
 ]
 
 ROOT_URLCONF = 'TekTrivia.urls'
@@ -152,7 +170,16 @@ REST_FRAMEWORK = {
         'anon': '10/minute',
         'user': '100/minute', # limit authenticated users' requests to 100 per minute
         'login': '5/minute', # 5 login attempts per minute...too much?
-    }
+    },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'TekTrivia API',
+    'DESCRIPTION': 'Quiz platform that stimulates learning through competition, allowing users to create, share and solve quizzes while progressing through a dynamic ranking system.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
 
 SIMPLE_JWT = {
@@ -184,6 +211,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = "/var/www/miniblog/static/"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = "/var/www/miniblog/media/"
 
 FRONTEND_URL = env('HOST_URL', default='http://localhost:8000')
 

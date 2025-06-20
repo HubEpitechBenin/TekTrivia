@@ -1,5 +1,6 @@
 import json
 import re
+from logging import exception
 from pyexpat.errors import messages
 from unicodedata import category
 
@@ -8,13 +9,14 @@ from django.db.models import Q
 from django.shortcuts import render
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
+from drf_spectacular.utils import extend_schema
 
-from core.services.ai_services import AIService, save_quiz_to_database, get_quiz_with_all_data
+from core.services.ai_services import AIService
 from .models import SCategory, SQuiz
 from .serializers import QuizSerializer, QuizCreateSerializer
 from .models import Question
@@ -24,6 +26,7 @@ from .models import Answer
 from .serializers import AnswerSerializer
 from .models import SCategory
 from .serializers import CategorySerializer
+from .serializers import QuizGenerationRequestSerializer
 
 class CategoryAPIView(APIView):
     def post(self, request):
@@ -88,18 +91,49 @@ class SimpleQuizViewset(viewsets.ModelViewSet):
                 )
 
         return queryset
-
+    
+    @extend_schema(
+        request=QuizGenerationRequestSerializer,
+        responses=QuizSerializer,
+        description="Generate a quiz on a topic using AI"
+    )
     @action(detail=False, methods=['post'])
     def generate(self, request, *args, **kwargs):
-        ai = AIService().OpenRouterClient()
-        generated_data = ai.generate_quiz(request_data=request.data)
-        generated_data = generated_data['choices'][0]['message']['content']
-        json_match = re.search(r'```json\n(.*?)\n```', generated_data, re.DOTALL)
-        quiz_json = json.loads(json_match.group(1))
+        # if 'file' in request.FILES:
+        #     file = request.FILES['file']
+        # else:
+        #     return Response(
+        #         status=HTTP_400_BAD_REQUEST,
+        #         data={
+        #             "message": "You need to upload a reference file to generate a quiz"
+        #         }
+        #     )
+
+        # ai = AIService().OpenRouterClient()
+        ai = AIService().OpenAIClient()
+        # try:
+        #     generated_data = ai.generate_quiz(request_data=request.data, request_files=request.FILES)
+        generated_data = ai.generate_quiz(request_data=request.data, request_files=request.FILES)
+        # print(generated_data)
+        # try:
+        #     generated_data = generated_data['choices'][0]['message']['content']
+        # except Exception as e:
+        #     return Response(
+        #         status=status.HTTP_400_BAD_REQUEST,
+        #         data= {
+        #             'message': f"AI API is currently unavailable. Try manual creation or sponsor Tektrivia for better AI availability."
+        #         }
+        #     )
+        # json_match = re.search(r'```json\n(.*?)\n```', generated_data, re.DOTALL)
+        # quiz_json = generated_data
+        # quiz_json = json.loads(generated_data.group(1))
+        quiz_json = json.loads(generated_data)
+        # print(quiz_json)
         with transaction.atomic():
             quiz = SQuiz.objects.create(
                 title=quiz_json['title'],
                 difficulty=quiz_json['difficulty'],
+                description=quiz_json['description']
             )
             quiz_body = quiz_json.get('Body')
             if not quiz_body:
@@ -139,9 +173,11 @@ class SimpleQuizViewset(viewsets.ModelViewSet):
             # serializer = QuizSerializer(data=quiz)
             # serializer.is_valid(raise_exception=True)
             # quiz = serializer.save()
+
         return Response(
             data={
-                'message': f"Quiz '{quiz_json['title']}' generated successfully"
+                'message': f"Quiz '{quiz_json['title']}' generated successfully",
+                'quiz':QuizSerializer(quiz).data
             },
             status=status.HTTP_201_CREATED
         )
@@ -153,7 +189,28 @@ class SimpleQuizViewset(viewsets.ModelViewSet):
             status=HTTP_200_OK
         )
 
+    def update(self, request, *args, **kwargs):
+        squiz = self.get_object()
+        with transaction.atomic():
+            serializer = QuizSerializer(squiz, data=request.data, partial=True)
+
+            if 'question_id' and 'question_text' in request.data:
+                for question_id in request.data['question_id']:
+                    question = Question.objects.get(id=question_id)
+                    question.text = request.data['question_text'][str(question_id)]
+                    question.save()
+            if 'answer_id' and 'answer_text' in request.data:
+                for answer_id in request.data['answer_id']:
+                    answer = Answer.objects.get(id=answer_id)
+                    answer.text = request.data['answer_text'][str(answer_id)]
+                    answer.save()
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class QuizzGenerationView(APIView):
+    
     def post(self, request):
         ai = AIService().OpenRouterClient()
         generated_data = ai.generate_quiz(request_data=request.data)
