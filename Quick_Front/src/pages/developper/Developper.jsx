@@ -1,5 +1,7 @@
 import React from "react";
-import { Github, Linkedin, Mail } from "lucide-react"; // nécessite lucide-react (facultatif, remplaçable par texte/icônes locales)
+import { Github, Linkedin, Mail } from "lucide-react";
+import Header from "../dashboard/components/Header";
+import Sidebar from "../dashboard/components/Sidebar";
 
 // --- Composant Button ---
 const Button = ({
@@ -62,142 +64,129 @@ const CardContent = ({ children, className = "" }) => {
   return <div className={`p-6 ${className}`}>{children}</div>;
 };
 
-// --- Composant Navigation (exemple simple) ---
-const Navigation = () => {
-  return (
-    <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-blue-600">QuizDev</h1>
-        <nav className="space-x-4 text-sm text-gray-600">
-          <a href="/" className="hover:text-blue-600">
-            Accueil
-          </a>
-          <a href="/quiz" className="hover:text-blue-600">
-            Quiz
-          </a>
-          <a href="/team" className="hover:text-blue-600">
-            Équipe
-          </a>
-        </nav>
-      </div>
-    </header>
-  );
-};
-
 // --- Données Développeurs ---
 const developers = [
   {
     id: 1,
-    name: "Aimane A.",
+    name: "Aimane Alassane",
     role: "Backend Developer",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     bio: "Architecte backend spécialisé dans les APIs REST et les bases de données performantes.",
-    skills: ["Node.js", "PostgreSQL", "Redis", "Docker", "AWS"],
+    skills: ["Django", "AI", "Cybersecurity", "Git", "C++"],
     github: "#",
-    linkedin: "#",
-    email: "email...",
+    linkedin: "https://www.linkedin.com/in/aimane-alassane/",
+    email: "aimane.alassane@epitech.eu",
   },
   {
     id: 2,
-    name: "Ronel ",
+    name: "Ronnel Dassi",
     role: "Backend Developer",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     bio: "Architecte backend spécialisé dans les APIs REST et les bases de données performantes.",
-    skills: ["Node.js", "PostgreSQL", "Redis", "Docker", "AWS"],
+    skills: ["Django", "Haskell", "C", "Git", "C++"],
     github: "#",
-    linkedin: "#",
-    email: "email...",
+    linkedin: "https://www.linkedin.com/in/ronnel-dassi-9aa53110b/",
+    email: "ronnel.dassi@epitech.eu",
   },
   {
     id: 3,
-    name: "Patrice D.",
+    name: "Patrice Dagbe",
     role: "Lead Frontend Developer",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=150&h=150&fit=crop&crop=face",
     bio: "Experte en React et TypeScript, passionnée par l'UX/UI et les animations web.",
-    skills: ["React", "TypeScript", "Tailwind CSS", "Next.js", "Figma"],
-    github: "#",
-    linkedin: "#",
-    email: "email...",
+    skills: ["AI", "Data Science", "React", "C++", "Tailwind CSS", "Next.js", "Figma"],
+    github: "https://github.com/PatriceDAGBE",
+    linkedin: "https://www.linkedin.com/in/patrice-dagbe-1020a6303/",
+    email: "patriko.dagbe@epitech.eu",
   },
   {
     id: 4,
     name: "Jean-Baptiste Viossi",
     role: "Frontend Developer",
-    avatar:
-      "https://intra.epitech.eu/file/userprofil/profilview/jean-baptiste.viossi@epitech.eu.jpg",
     bio: "Architecte backend spécialisé dans les APIs REST et les bases de données performantes.",
     skills: ["Node.js", "PostgreSQL", "Redis", "Docker", "AWS"],
-    github: "#",
-    linkedin: "#",
-    email: "jean-baptiste@epitech.eu",
+    github: "https://github.com/Jean-baptisteViossi",
+    linkedin: "https://www.linkedin.com/in/jean-baptiste-viossi-3080a4303/",
+    email: "jean-baptiste.viossi@epitech.eu",
   },
-  // Ajoute plus si tu veux...
 ];
 
 // --- Composant Principal ---
 const Developers = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-20">
-      {/* <Navigation /> */}
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar />
+      <div className="ml-8">
+        <Header />
+        <main className="p-2">
+          <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-20">
+            <section className="pt-4 pb-10 px-4 text-center">
+              <h1 className="text-4xl font-bold text-blue-700 mb-4">Notre Équipe</h1>
+              <p className="text-gray-600 mb-6 max-w-xl mx-auto">
+                Découvrez les développeurs qui rendent votre expérience de quiz incroyable.
+              </p>
+              <div className="flex flex-wrap justify-center gap-2 mb-6">
+                <Badge variant="secondary">🚀 Innovation</Badge>
+                <Badge variant="secondary">💡 Créativité</Badge>
+                <Badge variant="secondary">⚡ Performance</Badge>
+              </div>
+            </section>
 
-      <section className="pt-24 pb-10 px-4 text-center">
-        <h1 className="text-4xl font-bold text-blue-700 mb-4">Notre Équipe</h1>
-        <p className="text-gray-600 mb-6 max-w-xl mx-auto">
-          Découvrez les développeurs qui rendent votre expérience de quiz
-          incroyable.
-        </p>
-        <div className="flex flex-wrap justify-center gap-2 mb-6">
-          <Badge variant="secondary">🚀 Innovation</Badge>
-          <Badge variant="secondary">💡 Créativité</Badge>
-          <Badge variant="secondary">⚡ Performance</Badge>
-        </div>
-      </section>
-
-      <section className="px-4 max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {developers.map((dev) => (
-          <Card key={dev.id}>
-            <CardContent>
-              <div className="text-center">
-                <img
-                  src={dev.avatar}
-                  alt={dev.name}
-                  className="w-24 h-24 mx-auto rounded-full mb-3 object-cover border-4 border-white shadow-md"
-                />
-                <h3 className="text-lg font-bold text-gray-800">{dev.name}</h3>
-                <p className="text-blue-500 text-sm mb-3">{dev.role}</p>
-              </div>
-              <p className="text-sm text-gray-600 mb-4">{dev.bio}</p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {dev.skills.map((skill, idx) => (
-                  <Badge key={idx} variant="default">
-                    {skill}
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex justify-center space-x-2">
-                <a href={dev.github}>
-                  <Button size="sm" variant="ghost">
-                    <Github size={16} />
-                  </Button>
-                </a>
-                <a href={dev.linkedin}>
-                  <Button size="sm" variant="ghost">
-                    <Linkedin size={16} />
-                  </Button>
-                </a>
-                <a href={`mailto:${dev.email}`}>
-                  <Button size="sm" variant="ghost">
-                    <Mail size={16} />
-                  </Button>
-                </a>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </section>
+            <section className="px-4 max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {developers.map((dev) => (
+                <Card key={dev.id}>
+                  <CardContent>
+                    <div className="text-center">
+                      {/* Initiales à la place de l'image */}
+                      <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-bold text-gray-600 select-none">
+                        {dev.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()}
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-800">{dev.name}</h3>
+                      <p className="text-blue-500 text-sm mb-3">{dev.role}</p>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">{dev.bio}</p>
+                    <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                      {dev.skills.map((skill, idx) => (
+                        <Badge key={idx} variant="default">
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="flex justify-center space-x-2">
+                      {/* Boutons de test sans liens */}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => window.open(dev.github, "_blank")}
+                        aria-label={`GitHub profile de ${dev.name}`}
+                      >
+                        <Github size={16} />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => window.open(dev.linkedin, "_blank")}
+                        aria-label={`LinkedIn profile de ${dev.name}`}
+                      >
+                        <Linkedin size={16} />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => window.open(`mailto:${dev.email}`, "_blank")}
+                        aria-label={`Envoyer un email à ${dev.email}`}
+                      >
+                        <Mail size={16} />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </section>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

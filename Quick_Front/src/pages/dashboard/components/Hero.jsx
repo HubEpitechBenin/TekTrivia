@@ -1,8 +1,11 @@
 import React from 'react';
 import HeroImg from '../../../assets/icons/hero.jpg';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <div
       className="relative rounded-xl p-8 text-white mb-8 overflow-hidden"
@@ -20,10 +23,18 @@ const Hero = () => {
         <p className="text-xl mb-6 opacity-90">
           Every question brings you closer to mastery.
         </p>
+        <div className="flex gap-4">
         <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-3xl font-semibold flex items-center space-x-2 transition-colors">
           <span>Explore more</span>
           <ArrowRight size={20} />
         </button>
+        <button 
+          onClick={() => navigate('/developper')}
+          className="bg-blue-400 hover:bg-blue-600 text-white px-6 py-3 rounded-3xl font-semibold flex items-center space-x-2 transition-colors">
+          <span>Developpers</span>
+          <ArrowRight size={20} />
+        </button>
+        </div>
       </div>
 
       <div className="absolute right-8 top-1/2 transform -translate-y-1/2 flex items-center space-x-4 z-10">

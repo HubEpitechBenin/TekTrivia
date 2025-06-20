@@ -152,9 +152,11 @@ import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import Modal from '../../../components/layout/Modal';
 import CreateQuizModal from './CreateQuizModal';
-// import QuizEditor from './QuizEditor';
+import QuizEditor from './QuizEditor';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryFilter = () => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [quizData, setQuizData] = useState(null);
@@ -201,20 +203,25 @@ const CategoryFilter = () => {
       }
     ];
 
-    return baseQuestions.slice(0, data.num_questions || data.questionCount || 2);
+    return data.questions;
+
+    // return baseQuestions.slice(0, data.questions.length || data.questionCount || 2);
   };
 
   const handleGenerate = (data) => {
     console.log('Quiz generation data:', data);
 
-    const questions = generateMockQuestions(data);
+    const questions = generateMockQuestions(data.quiz);
 
-    const title = data.title && data.title.length > 50
-      ? `${data.title.substring(0, 47)}...`
-      : data.title || 'Generated Quiz';
+    const title = data.quiz.title && data.quiz.title.length > 50
+      ? `${data.quiz.title.substring(0, 47)}...`
+      : data.quiz.title || 'Generated Quiz';
 
     setQuizData({
+      id: data.quiz.id,
       title: title,
+      description: data.quiz.description,
+      difficulty: data.quiz.difficulty,
       questions: questions
     });
 
@@ -228,41 +235,86 @@ const CategoryFilter = () => {
     setQuizData(null);
   };
 
-  const handlePublish = (quiz) => {
-    console.log('Publishing quiz:', quiz);
-    alert('Quiz published successfully!');
+  const handlePublish = async (quiz) => {
+    try {
+      // Extraction des infos selon le format demandé
+      const question_id = quiz.questions.map(q => q.id);
+      const question_text = {};
+      const answer_id = [];
+      const answer_text = {};
+
+      quiz.questions.forEach(question => {
+        question_text[question.id] = question.text;
+
+        question.answers.forEach(answer => {
+          answer_id.push(answer.id);
+          answer_text[answer.id] = answer.text;
+        });
+      });
+
+      const payload = {
+        title: quiz.title, 
+        question_id,
+        question_text,
+        answer_id,
+        answer_text,
+      };
+
+      const response = await fetch(`/api/squiz/ai/${quiz.id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP ${response.status}`);
+      }
+
+      const updatedQuiz = await response.json();
+      console.log('Quiz mis à jour avec succès :', updatedQuiz);
+      alert('Quiz publié avec succès !');
+      handleBackToHome();
+    } catch (error) {
+      console.error('Erreur lors de la publication du quiz :', error);
+      alert('Échec de la publication du quiz.');
+    }
   };
+
 
   if (showEditor && quizData) {
     return (
-      <div className="relative w-full min-h-screen bg-white">
-        {/* Success Modal */}
-        {showSuccessModal && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-            <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm text-center">
-              <h3 className="text-lg font-semibold text-green-600 mb-2">Quiz Ready!</h3>
-              <p className="text-gray-700 mb-4">
-                Your quiz <strong>{quizData.title}</strong> has been generated successfully 🎉
-              </p>
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        )}
+      // <div className="relative w-full min-h-screen bg-white">
+      //   {/* Success Modal */}
+      //   {showSuccessModal && (
+      //     <div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      //       <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm text-center">
+      //         <h3 className="text-lg font-semibold text-green-600 mb-2">Quiz Ready!</h3>
+      //         <p className="text-gray-700 mb-4">
+      //           Your quiz <strong>{quizData.title}</strong> has been generated successfully 🎉
+      //         </p>
+      //         <button
+      //           onClick={() => setShowSuccessModal(false)}
+      //           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
+      //         >
+      //           OK
+      //         </button>
+      //       </div>
+      //     </div>
+      //   )}
 
-        {/* 
-        <QuizEditor
-          quizTitle={quizData.title}
-          questions={quizData.questions}
-          onBack={handleBackToHome}
-          onPublish={handlePublish}
-        />
-        */}
-      </div>
+
+      <QuizEditor
+        quizId={quizData.id}
+        quizDifficulty={quizData.difficulty}
+        quizDescription={quizData.description}
+        quizTitle={quizData.title}
+        questions={quizData.questions}
+        onBack={handleBackToHome}
+        onPublish={handlePublish}
+      />
+      // </div>
     );
   }
 
