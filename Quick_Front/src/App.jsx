@@ -5,9 +5,7 @@ import PageTransition from "./components/layout/PageTransition";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Rank from "./pages/ranking/Rank";
 import NotFound from "./pages/NotFound";
-import QuizLab from './pages/quizLab/QuizLab';
-
-
+import QuizLab from "./pages/quizLab/QuizLab";
 
 function App() {
   return (
