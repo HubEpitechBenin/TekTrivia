@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import PageTransition from "./components/layout/PageTransition";
+// import Home from "./pages/home/Home";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Rank from "./pages/ranking/Rank";
 import NotFound from "./pages/NotFound";
@@ -14,6 +15,7 @@ function App() {
       <BrowserRouter>
         <PageTransition>
           <Routes>
+            {/* <Route path="/" element={<Home />} /> */}
             <Route path="/" element={<Dashboard />} />
             <Route path="/rank" element={<Rank />} />
             <Route path="/quiz-lab" element={<QuizLab />} />

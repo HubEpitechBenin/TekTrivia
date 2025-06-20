@@ -8,14 +8,30 @@ TekTrivia is a dynamic quiz platform that promotes **active learning through com
 
 ## 📌 Table of Contents
 
-- [🔍 Project Description](#-project-description)
-- [🛠️ Technologies Used](#️-technologies-used)
-- [📡 API Documentation](#-api-documentation)
-- [📁 Project Structure](#-project-structure)
-- [🚀 Getting Started](#-getting-started)
-- [👤 Project Owners & Roles](#-project-owners--roles)
-- [🎬 Demo](#-demo)
-- [📃 License](#-license)
+- [🎯 TekTrivia: Learn Through Play](#-tektrivia-learn-through-play)
+  - [📌 Table of Contents](#-table-of-contents)
+  - [🔍 Project Description](#-project-description)
+  - [🛠️ Technologies Used](#️-technologies-used)
+    - [🎨 Frontend](#-frontend)
+    - [⚙️ Backend](#️-backend)
+    - [🤖 AI Integration](#-ai-integration)
+  - [📡 API Documentation](#-api-documentation)
+  - [📁 Project Structure](#-project-structure)
+  - [🚀 Getting Started](#-getting-started)
+    - [🔧 Prerequisites](#-prerequisites)
+    - [🧪 Backend Setup](#-backend-setup)
+    - [💻 Frontend Setup](#-frontend-setup)
+- [Install dependencies](#install-dependencies)
+- [Start Vite dev server](#start-vite-dev-server)
+    - [👤 Project Owners \& Roles](#-project-owners--roles)
+  - [👤 Project Owners \& Roles](#-project-owners--roles-1)
+  - [🎬 Demo](#-demo)
+    - [🔹 Dashboard With Quizzes](#-dashboard-with-quizzes)
+    - [🔹 Developpers Page](#-developpers-page)
+    - [🔹 Create Quiz With AI](#-create-quiz-with-ai)
+    - [🔹 Edit Quiz](#-edit-quiz)
+    - [🔹 Leaderboards](#-leaderboards)
+  - [📃 License](#-license)
 
 ---
 
@@ -56,6 +72,7 @@ Explore the available endpoints via the live Swagger UI:
 
 ## 📁 Project Structure
 
+```bash
 TekTrivia/
 ├── doc_backend/
 ├── doc_frontend/
@@ -90,7 +107,7 @@ TekTrivia/
 │ ├── tailwind.config.js
 │ ├── vite.config.js
 │ └── README.md
-
+```
 
 ---
 
@@ -127,16 +144,17 @@ python manage.py runserver 0.0.0.0:8080
 ### 💻 Frontend Setup
 
 ```bash
-cd TekTrivia_frontend
+cd Quick_Front
 
 # Install dependencies
 npm install
 
 # Start Vite dev server
 npm run dev
+```
 
 Frontend will be available at: http://localhost:5173
-```
+
 
 ## 👤 Project Owners & Roles
 
@@ -144,7 +162,7 @@ Frontend will be available at: http://localhost:5173
 |--------------------------|------------------------------|
 | **Ronnel DASSI**         | Project Lead, Backend Dev    |
 | **Aïmane ALASSANE**      | Backend Dev                  |
-| **Patriko DAGBE**        | Frontend Dev, UX             |
+| **Patriko DAGBE**        | Frontend Dev Lead, UX        |
 | **Jean Baptiste VIOSSI** | Frontend Dev, UX             |
 
 *Feel free to fork or contribute!*
@@ -153,14 +171,20 @@ Frontend will be available at: http://localhost:5173
 
 Live demo screenshots will help users visualize the product.
 
-### 🔹 AI Quiz from URL
-![AI Quiz from URL](public/screenshots/quiz-from-url.png)
+### 🔹 Dashboard With Quizzes
+![Create Quiz With AI](/screenshots/dashboard.png)
 
-### 🔹 Text-based Quiz Generator
-![Text-based Quiz Generator](public/screenshots/quiz-from-text.png)
+### 🔹 Developpers Page
+![Create Quiz With AI](/screenshots/dashboard.png) 
+
+### 🔹 Create Quiz With AI
+![Create Quiz With AI](/screenshots/create_with_ai.png)
+
+### 🔹 Edit Quiz
+![Edit Quiz](/screenshots/edit_quiz.png)
 
 ### 🔹 Leaderboards
-![Leaderboards](public/screenshots/leaderboard.png)
+![Leaderboards](/screenshots/leaderboards.png)
 
 > 📝 *Replace the image paths with actual screenshots or hosted image URLs.*
 
