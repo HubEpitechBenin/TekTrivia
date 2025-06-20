@@ -6,6 +6,8 @@ import PyPDF2
 import json
 import re
 from django.db import transaction
+from openai.types.chat import ChatCompletionUserMessageParam
+
 from SimpleQuiz.models import SQuiz, Question, Answer
 from SimpleQuiz.serializers import QuizCreateSerializer, QuestionSerializer, AnswerSerializer, QuizSerializer
 
@@ -128,17 +130,74 @@ class AIService:
             if not self.client:
                 raise ValueError("OpenAI client not initialized. Check your API key.")
 
-        def generate_quiz(self, document_text:str, num_questions:int=5):
+        def generate_http_quiz(self, request_data, request_files):
+            url = " https://api.openai.com/v1/realtime/sessions"
+            headers = {
+                "Authorization": f"Bearer {self.openai_key}",
+                "Content-Type": "application/json"
+            }
+            # document_text = request_data.get("document_text")
+            document_text = DocumentService().receive_document(body=request_data, files=request_files)
+            num_questions = request_data.get("num_questions")
+            theme = request_data.get("theme")
+            difficulty = request_data.get("difficulty")
 
-            prompt = AIService.generate_prompt(document_text, num_questions)
+            prompt = AIService.generate_prompt(
+                document_text,
+                num_questions,
+                theme,
+                difficulty
+            )
+            role = "You are a helpful assistant professor who creates quizzes based on documents."
+
+            data = {
+                "model": "gpt-4o-realtime-preview",
+                "modalities": ["audio", "text"],
+                "instructions": f"{role} {prompt}"
+            }
+            response = requests.post(url, headers=headers, json=data)
+            return response.json()
+
+        def generate_response_quiz(self, request_data, request_files):
+            document_text = DocumentService().receive_document(body=request_data, files=request_files)
+            num_questions = request_data.get("num_questions")
+            theme = request_data.get("theme")
+            difficulty = request_data.get("difficulty")
+            prompt = AIService.generate_prompt(
+                document_text,
+                num_questions,
+                theme,
+                difficulty
+            )
+            response = self.client.responses.create(
+                model="gpt-4o",
+                input=prompt
+            )
+            quiz = response.output[0].content[0].text
+            print(quiz)
+            return quiz
+
+        def generate_quiz(self, request_data, request_files):
+
+            document_text = DocumentService().receive_document(body=request_data, files=request_files)
+            num_questions = request_data.get("num_questions")
+            theme = request_data.get("theme")
+            difficulty = request_data.get("difficulty")
+
+            prompt = AIService.generate_prompt(
+                document_text,
+                num_questions,
+                theme,
+                difficulty
+            )
             response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4.1",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant professor who creates quizzes based on documents."},
                     {"role": "user", "content": prompt}
-                ],
-                max_tokens=2000,
-                temperature=0.7
+                ]
+                # max_tokens=2000,
+                # temperature=0.7
             )
             return response.choices[0].message.content
 
