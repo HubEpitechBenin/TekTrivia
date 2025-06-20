@@ -114,7 +114,7 @@ class SimpleQuizViewset(viewsets.ModelViewSet):
         # try:
         #     generated_data = ai.generate_quiz(request_data=request.data, request_files=request.FILES)
         generated_data = ai.generate_quiz(request_data=request.data, request_files=request.FILES)
-        print(generated_data)
+        # print(generated_data)
         # try:
         #     generated_data = generated_data['choices'][0]['message']['content']
         # except Exception as e:
@@ -128,7 +128,7 @@ class SimpleQuizViewset(viewsets.ModelViewSet):
         # quiz_json = generated_data
         # quiz_json = json.loads(generated_data.group(1))
         quiz_json = json.loads(generated_data)
-        print(quiz_json)
+        # print(quiz_json)
         with transaction.atomic():
             quiz = SQuiz.objects.create(
                 title=quiz_json['title'],
