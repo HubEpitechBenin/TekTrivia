@@ -163,7 +163,7 @@ Frontend will be available at: http://localhost:5173
 |--------------------------|------------------------------|
 | **Ronnel DASSI**         | Project Lead, Backend Dev    |
 | **Aïmane ALASSANE**      | Backend Dev                  |
-| **Patriko DAGBE**        | Frontend Dev Lead, UX        |
+| **Patrice DAGBE**        | Frontend Dev Lead, UX        |
 | **Jean Baptiste VIOSSI** | Frontend Dev, UX             |
 
 *Feel free to fork or contribute!*
